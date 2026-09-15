@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desmond's 12th Birthday – RSVP</title>
+<meta name="description" content="Friday, Oct 2 at 5:00 PM. Tailgate, flag football, then the LHS game. Tap to RSVP.">
+<meta property="og:title" content="Desmond's 12th Birthday Tailgate & Football">
+<meta property="og:description" content="Friday, Oct 2 at 5:00 PM. Tap to RSVP.">
+<meta name="theme-color" content="#1D3FD1">
+<meta property="og:image" content="hero.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1D5E;
+    --royal:#1D3FD1;
+    --royal-bright:#3A63FF;
+    --sky:#E9F0FF;
+    --ink:#14224F;
+    --muted:#55638F;
+    --line:#C9D6F5;
+    --white:#FFFFFF;
+    --error:#B3261E;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--sky);color:var(--ink);
+    font-family:'Barlow',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,input,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:3px solid var(--royal-bright);outline-offset:3px}
+  [hidden]{display:none !important}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(#fff 80%, var(--sky));
+    padding-bottom:10px;
+  }
+  .hero img{display:block;width:100%;max-width:1200px;height:auto;margin:0 auto}
+  @media (min-width:1201px){
+    .hero img{
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+              mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+    }
+  }
+  .hero-date{display:none}
+  @media (max-width:600px){ /* image text gets tiny on phones, so repeat the key details */
+    .hero{padding-bottom:0}
+    .hero-date{
+      display:block;margin:4px 14px 0;padding:10px 14px;border-radius:12px;
+      background:var(--navy);color:#fff;text-align:center;
+      font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;line-height:1.2;
+    }
+    .hero-date span{display:block;font-weight:600;font-size:16px;opacity:.85}
+  }
+
+  /* ---------- Layout ---------- */
+  main{max-width:540px;margin:14px auto 0;padding:0 14px 40px;position:relative}
+  .panel{
+    background:var(--white);border-radius:20px;padding:26px 20px 24px;
+    box-shadow:0 14px 40px rgba(11,29,94,.14);
+  }
+  .panel + .panel{margin-top:18px}
+  .headcount{
+    margin:0 0 18px;text-align:center;font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:19px;color:var(--royal);
+  }
+  .preview-note{
+    margin:0 0 18px;padding:10px 14px;border-radius:10px;background:#FFF6D6;color:#5C4700;font-size:15px;
+  }
+
+  /* ---------- Steps ---------- */
+  .step{padding:4px 0 22px}
+  .step + .step{border-top:2px dashed var(--line);padding-top:22px}
+  .step-head{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+  .num{
+    flex:none;width:38px;height:38px;border-radius:50%;background:var(--royal);color:var(--white);
+    display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;
+  }
+  .step h2{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;line-height:1.1;color:var(--navy)}
+  .hint{margin:-8px 0 12px 50px;color:var(--muted);font-size:15px}
+
+  .field{
+    width:100%;min-height:54px;padding:12px 16px;border:2.5px solid var(--line);border-radius:14px;
+    background:var(--white);font-size:19px;
+  }
+  .field:focus{border-color:var(--royal);outline:none;box-shadow:0 0 0 3px rgba(58,99,255,.25)}
+  textarea.field{min-height:80px;resize:vertical;font-size:17px}
+  label.small{display:block;margin:16px 0 6px;font-weight:600;font-size:15px;color:var(--muted)}
+
+  .choices{display:flex;gap:10px}
+  .choice{
+    flex:1;min-height:58px;border:2.5px solid var(--royal);border-radius:999px;background:var(--white);color:var(--royal);
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;
+    display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+    transition:background-color .15s,color .15s;-webkit-tap-highlight-color:transparent;
+  }
+  .choice svg{width:20px;height:20px;flex:none}
+  .choice[aria-pressed="true"]{background:var(--royal);color:var(--white)}
+  .choice[data-value="no"][aria-pressed="true"]{background:var(--navy);border-color:var(--navy)}
+
+  .stepper{display:flex;align-items:center;gap:14px;margin-top:4px}
+  .stepper button{
+    width:52px;height:52px;border-radius:50%;border:2.5px solid var(--royal);background:var(--white);color:var(--royal);
+    font-size:28px;font-weight:600;line-height:1;cursor:pointer;
+  }
+  .stepper button:disabled{opacity:.35;cursor:default}
+  .stepper output{min-width:44px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;color:var(--navy)}
+  .stepper .unit{color:var(--muted);font-size:16px}
+
+  .error{margin:0 0 14px;color:var(--error);font-weight:600;font-size:16px}
+  .send{
+    width:100%;min-height:62px;border:0;border-radius:16px;background:var(--royal);color:var(--white);cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;letter-spacing:.02em;
+    box-shadow:0 5px 0 var(--navy);
+  }
+  .send:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
+  .send:disabled{opacity:.7;cursor:progress}
+
+  /* ---------- Confirmation ---------- */
+  .done{text-align:center;padding:10px 4px 6px}
+  .done h2{
+    font-family:'Permanent Marker',cursive;font-weight:400;color:var(--royal);
+    font-size:clamp(32px,9vw,44px);line-height:1.05;margin:6px 0 12px;transform:rotate(-3deg);
+  }
+  .done p{margin:0 auto 18px;max-width:34ch}
+  .done .summary{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:var(--navy)}
+  .actions{display:flex;flex-direction:column;gap:10px}
+  .btn-outline{
+    display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:14px;
+    border:2.5px solid var(--royal);color:var(--royal);background:var(--white);text-decoration:none;cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;
+  }
+  .link-btn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:10px;font-size:16px}
+  .pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* ---------- Plan timeline ---------- */
+  .plan h2{margin:0 0 18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;color:var(--navy)}
+  .timeline{list-style:none;margin:0;padding:0;position:relative}
+  .timeline li:not(:last-child)::before{content:"";position:absolute;left:79px;top:14px;bottom:-8px;width:3px;background:var(--line)}
+  .timeline li{display:grid;grid-template-columns:64px 1fr;column-gap:34px;padding:0 0 18px;position:relative}
+  .timeline li:last-child{padding-bottom:0}
+  .timeline li::after{
+    content:"";position:absolute;left:73px;top:6px;width:15px;height:15px;border-radius:50%;
+    background:var(--white);border:3.5px solid var(--royal);
+  }
+  .timeline li.kick::after{background:var(--royal)}
+  .time{text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:var(--royal);line-height:1.4}
+  .what strong{display:block;font-weight:600;color:var(--navy)}
+  .what span{color:var(--muted);font-size:15px}
+  .map-link{display:inline-block;margin-top:4px;color:var(--royal);font-weight:600;font-size:15px}
+
+  footer{text-align:center;padding:18px 20px 44px}
+  footer p{
+    margin:0;font-family:'Permanent Marker',cursive;font-size:30px;color:var(--royal);transform:rotate(-4deg);
+  }
+
+  /* ---------- Host view ---------- */
+  .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 20px}
+  .total{background:var(--sky);border-radius:14px;padding:12px 14px}
+  .total b{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;line-height:1;color:var(--navy)}
+  .total span{font-size:15px;color:var(--muted)}
+  .guest{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .guest .g-name{font-weight:600}
+  .guest .g-notes{display:block;font-size:14px;color:var(--muted)}
+  .guest .g-meta{text-align:right;font-size:15px;white-space:nowrap}
+  .guest.no .g-name{color:var(--muted)}
+
+  @media (prefers-reduced-motion:reduce){
+    .pop{animation:none}
+    .choice{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img src="hero.jpg" width="1600" height="777"
+       alt="Desmond's 12th Birthday Tailgate and Football. Friday, Oct 2, 2026. Party starts at 5:00 PM, game starts at 6:30 PM.">
+  <p class="hero-date" aria-hidden="true">Friday, Oct 2, 2026<span>Party at 5:00 PM, game at 6:30 PM</span></p>
+</header>
+
+<main>
+  <!-- Guest RSVP -->
+  <section class="panel" id="rsvp-panel" aria-labelledby="rsvp-title">
+    <h2 id="rsvp-title" hidden>RSVP</h2>
+    <p class="preview-note" id="preview-note" hidden>Preview mode: RSVPs aren't being saved yet. Add your Google Sheet link in the code to go live.</p>
+    <p class="headcount" id="headcount" hidden></p>
+
+    <div id="form">
+      <div class="step">
+        <div class="step-head"><span class="num">1</span><h2><label for="name">Who's coming?</label></h2></div>
+        <p class="hint">Your player's name (first and last)</p>
+        <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Jordan Smith" maxlength="60">
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="num">2</span><h2 id="attend-label">Can you make it?</h2></div>
+        <div class="choices" role="group" aria-labelledby="attend-label">
+          <button type="button" class="choice" data-group="attending" data-value="yes" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Yes
+          </button>
+          <button type="button" class="choice" data-group="attending" data-value="no" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>No
+          </button>
+        </div>
+      </div>
+
+      <div class="step" id="pizza-step" hidden>
+        <div class="step-head"><span class="num">3</span><h2 id="pizza-label">Pizza preference</h2></div>
+        <div class="choices" role="group" aria-labelledby="pizza-label">
+          <button type="button" class="choice" data-group="pizza" data-value="Cheese" aria-pressed="false">Cheese</button>
+          <button type="button" class="choice" data-group="pizza" data-value="Pepperoni" aria-pressed="false">Pepperoni</button>
+        </div>
+        <label class="small" id="count-label">How many in your group?</label>
+        <div class="stepper" role="group" aria-labelledby="count-label">
+          <button type="button" id="minus" aria-label="One fewer">−</button>
+          <output id="count" aria-live="polite">1</output>
+          <button type="button" id="plus" aria-label="One more">+</button>
+          <span class="unit" id="count-unit">person</span>
+        </div>
+      </div>
+
+      <div class="step" id="send-step">
+        <label class="small" for="notes" style="margin-top:0">Anything we should know? (optional)</label>
+        <textarea class="field" id="notes" maxlength="200" placeholder="Allergies, arriving late, a parent is staying…"></textarea>
+        <div style="height:18px"></div>
+        <p class="error" id="error" role="alert" hidden></p>
+        <button type="button" class="send" id="send">Send RSVP</button>
+      </div>
+    </div>
+
+    <div class="done" id="done" hidden aria-live="polite"></div>
+  </section>
+
+  <!-- Host view (only with ?host=KEY) -->
+  <section class="panel" id="host-panel" hidden aria-labelledby="host-title">
+    <h2 id="host-title" style="margin:0 0 16px;font-family:'Barlow Condensed',sans-serif;font-size:28px;color:var(--navy)">Guest list</h2>
+    <div id="host-body"><p>Loading RSVPs…</p></div>
+  </section>
+
+  <!-- The plan -->
+  <section class="panel plan" aria-labelledby="plan-title">
+    <h2 id="plan-title">The game plan</h2>
+    <ol class="timeline">
+      <li>
+        <span class="time">5:00</span>
+        <div class="what"><strong>Meet at the upper high school parking lot</strong>
+          <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Lunenburg+High+School+Lunenburg+MA" target="_blank" rel="noopener">Get directions</a>
+        </div>
+      </li>
+      <li>
+        <span class="time"></span>
+        <div class="what"><strong>Tailgate</strong><span>Pizza, drinks &amp; cupcakes</span></div>
+      </li>
+      <li>
+        <span class="time"></span>
+        <div class="what"><strong>Flag football game</strong><span>A short game with the birthday crew</span></div>
+      </li>
+      <li class="kick">
+        <span class="time">6:30</span>
+        <div class="what"><strong>LHS football game</strong><span>Head over and cheer on the Blue Knights</span></div>
+      </li>
+    </ol>
+  </section>
+</main>
+
+<footer><p>Go Blue Knights!</p></footer>
+
+<script>
+/* =========================================================
+   SETUP: paste your Google Apps Script web app URL below.
+   Leave it blank to preview (RSVPs won't be saved).
+   ========================================================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRh2JGyKnjVPDyxoixomBzBbOeTKMWdXNQiNX9XLdjWbOWxByRJLNrmBEE0VzyODtToA/exec';
+
+(function(){
+  const $ = s => document.querySelector(s);
+  const state = { attending:null, pizza:null, count:1 };
+  const params = new URLSearchParams(location.search);
+  const hostKey = params.get('host');
+  let demoRows = []; // used only in preview mode
+
+  if(!SCRIPT_URL) $('#preview-note').hidden = false;
+
+  /* ---------- Choice buttons ---------- */
+  document.querySelectorAll('.choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.dataset.group, value = btn.dataset.value;
+      state[group] = value;
+      document.querySelectorAll('[data-group="'+group+'"]').forEach(b =>
+        b.setAttribute('aria-pressed', String(b === btn)));
+      if(group === 'attending') $('#pizza-step').hidden = value !== 'yes';
+      hideError();
+    });
+  });
+
+  /* ---------- Group size ---------- */
+  function renderCount(){
+    $('#count').textContent = state.count;
+    $('#count-unit').textContent = state.count === 1 ? 'person' : 'people';
+    $('#minus').disabled = state.count <= 1;
+    $('#plus').disabled = state.count >= 10;
+  }
+  $('#minus').addEventListener('click', () => { state.count = Math.max(1, state.count-1); renderCount(); });
+  $('#plus').addEventListener('click', () => { state.count = Math.min(10, state.count+1); renderCount(); });
+  renderCount();
+
+  /* ---------- Errors ---------- */
+  function showError(msg, focusEl){
+    const e = $('#error'); e.textContent = msg; e.hidden = false;
+    if(focusEl) focusEl.focus();
+  }
+  function hideError(){ $('#error').hidden = true; }
+  $('#name').addEventListener('input', hideError);
+
+  /* ---------- Submit ---------- */
+  $('#send').addEventListener('click', async () => {
+    const name = $('#name').value.trim().replace(/\s+/g,' ');
+    if(!name) return showError("Add your player's name so Desmond knows who's coming.", $('#name'));
+    if(!state.attending) return showError('Tap Yes or No to let us know if you can make it.');
+    const yes = state.attending === 'yes';
+    if(yes && !state.pizza) return showError('Pick cheese or pepperoni.');
+
+    const payload = {
+      name,
+      attending: yes,
+      pizza: yes ? state.pizza : '',
+      count: yes ? state.count : 0,
+      notes: $('#notes').value.trim()
+    };
+
+    const btn = $('#send');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try{
+      await sendRSVP(payload);
+      showDone(payload);
+      loadHeadcount();
+    }catch(err){
+      showError("Your RSVP didn't send. Check your connection and tap Send RSVP again.");
+    }finally{
+      btn.disabled = false; btn.textContent = 'Send RSVP';
+    }
+  });
+
+  async function sendRSVP(p){
+    if(!SCRIPT_URL){
+      demoRows = demoRows.filter(r => r.name.toLowerCase() !== p.name.toLowerCase());
+      demoRows.push(p);
+      await new Promise(r => setTimeout(r, 450));
+      return;
+    }
+    try{
+      // text/plain body keeps this a "simple" request so Apps Script accepts it
+      const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(p) });
+      const data = await res.json();
+      if(!data.ok) throw new Error(data.error || 'Save failed');
+    }catch(err){
+      if(err instanceof TypeError){
+        // Some browsers block reading the reply; send blind as a fallback.
+        await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(p) });
+        return;
+      }
+      throw err;
+    }
+  }
+
+  /* ---------- Confirmation ---------- */
+  function showDone(p){
+    const first = escapeHTML(p.name.split(' ')[0]);
+    const done = $('#done');
+    if(p.attending){
+      const who = p.count === 1 ? 'Just you' : p.count + ' people';
+      done.innerHTML =
+        '<h2 class="pop">See you there, ' + first + '!</h2>' +
+        '<p class="summary">' + who + ', ' + p.pizza.toLowerCase() + ' pizza</p>' +
+        '<p>Meet at the upper high school parking lot on Friday, Oct 2 at 5:00&nbsp;PM.</p>' +
+        '<div class="actions">' +
+          '<a class="btn-outline" href="' + icsHref() + '" download="desmonds-birthday.ics">Add to calendar</a>' +
+          '<button type="button" class="link-btn" id="change">Change my answer</button>' +
+        '</div>';
+    }else{
+      done.innerHTML =
+        '<h2 class="pop">Thanks for letting us know</h2>' +
+        '<p>Sorry you can\'t make it, ' + first + '. If plans change, you can update your answer anytime.</p>' +
+        '<div class="actions"><button type="button" class="link-btn" id="change">Change my answer</button></div>';
+    }
+    $('#form').hidden = true;
+    done.hidden = false;
+    $('#change').addEventListener('click', () => {
+      done.hidden = true; $('#form').hidden = false; $('#name').focus();
+    });
+    document.getElementById('rsvp-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function icsHref(){
+    const ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Steele//Desmond Birthday//EN','BEGIN:VEVENT',
+      'UID:desmond-12th-birthday-2026@natesteele888.github.io',
+      'DTSTAMP:20260914T120000Z',
+      'DTSTART:20261002T210000Z',   // 5:00 PM EDT
+      'DTEND:20261003T013000Z',     // ~9:30 PM EDT
+      "SUMMARY:Desmond's 12th Birthday Tailgate & Football",
+      'LOCATION:Lunenburg High School\\, upper parking lot\\, Lunenburg MA',
+      'DESCRIPTION:Meet at 5:00 PM for pizza\\, drinks & cupcakes and a flag football game. Then the LHS game at 6:30 PM. Go Blue Knights!',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+  }
+
+  /* ---------- Headcount (totals only, no names) ---------- */
+  async function loadHeadcount(){
+    try{
+      const t = SCRIPT_URL
+        ? await (await fetch(SCRIPT_URL + '?t=' + Date.now())).json()
+        : summarize(demoRows);
+      if(t && t.coming > 0){
+        const el = $('#headcount');
+        el.textContent = t.coming + (t.coming === 1 ? ' person is' : ' people are') + ' coming so far';
+        el.hidden = false;
+      }
+    }catch(e){ /* headcount is a nice-to-have */ }
+  }
+
+  function summarize(rows){
+    const t = { coming:0, cheese:0, pepperoni:0, notComing:0 };
+    rows.forEach(r => {
+      if(r.attending){
+        t.coming += r.count;
+        if(r.pizza === 'Cheese') t.cheese += r.count;
+        if(r.pizza === 'Pepperoni') t.pepperoni += r.count;
+      } else t.notComing++;
+    });
+    return t;
+  }
+
+  /* ---------- Host view ---------- */
+  async function loadHost(){
+    $('#host-panel').hidden = false;
+    $('#rsvp-panel').hidden = true;
+    const body = $('#host-body');
+    try{
+      let data;
+      if(SCRIPT_URL){
+        data = await (await fetch(SCRIPT_URL + '?host=' + encodeURIComponent(hostKey) + '&t=' + Date.now())).json();
+      }else{
+        data = Object.assign(summarize(demoRows), { rows: demoRows });
+      }
+      if(!data.rows){
+        body.innerHTML = '<p>This host link doesn\'t match. Check the HOST_KEY in your Apps Script and use <b>?host=</b> followed by that key.</p>';
+        return;
+      }
+      const rows = data.rows.slice().sort((a,b) => (b.attending - a.attending) || a.name.localeCompare(b.name));
+      body.innerHTML =
+        '<div class="totals">' +
+          total(data.coming, 'people coming') +
+          total(data.notComing, "can't make it") +
+          total(data.cheese, 'cheese') +
+          total(data.pepperoni, 'pepperoni') +
+        '</div>' +
+        (rows.length ? rows.map(r =>
+          '<div class="guest' + (r.attending ? '' : ' no') + '">' +
+            '<div><span class="g-name">' + escapeHTML(r.name) + '</span>' +
+              (r.notes ? '<span class="g-notes">' + escapeHTML(r.notes) + '</span>' : '') + '</div>' +
+            '<div class="g-meta">' + (r.attending ? r.count + ' · ' + escapeHTML(r.pizza) : 'Not coming') + '</div>' +
+          '</div>').join('') : '<p>No RSVPs yet. Share the link or QR code to get them rolling.</p>') +
+        '<button type="button" class="btn-outline" id="refresh" style="width:100%;margin-top:16px">Refresh list</button>';
+      $('#refresh').addEventListener('click', loadHost);
+    }catch(e){
+      body.innerHTML = '<p>Couldn\'t load RSVPs. Check that the Apps Script is deployed with access set to "Anyone", then refresh.</p>';
+    }
+  }
+  function total(n, label){ return '<div class="total"><b>' + (n||0) + '</b><span>' + label + '</span></div>'; }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  if(hostKey) loadHost(); else loadHeadcount();
+})();
+</script>
+</body>
+</html>
