@@ -176,6 +176,12 @@
   .rem{margin:0 0 18px;padding:12px 14px;border-radius:14px;background:var(--sky);font-size:15px;line-height:1.5}
   .rem b.h{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--navy);display:block;margin-bottom:4px}
   .rem .warn{color:#8A5B00}
+  .list-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    margin:22px 0 2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;
+    font-size:22px;color:var(--navy);
+  }
+  .list-head span{font-family:'Barlow',sans-serif;font-weight:600;font-size:15px;color:var(--muted)}
   .host-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
   .host-actions .btn-outline{min-height:46px;font-size:18px}
   .host-actions .wide{grid-column:1 / -1}
@@ -597,8 +603,11 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
           total(data.pepperoni, 'pepperoni') +
         '</div>' +
         remindersCard(data, coming.length, withEmail) +
-        (rows.length ? rows.map(guestRow).join('')
-                     : '<p>No RSVPs yet. Share the link or the QR code to get them rolling.</p>') +
+        (rows.length
+          ? '<h3 class="list-head">Who&rsquo;s replied <span>' + rows.length +
+            (rows.length === 1 ? ' reply' : ' replies') + '</span></h3>' +
+            rows.map(guestRow).join('')
+          : '<p>No RSVPs yet. Share the link or the QR code to get them rolling.</p>') +
         '<div class="host-actions">' +
           '<button type="button" class="btn-outline" id="copy-emails">Copy emails</button>' +
           '<button type="button" class="btn-outline" id="csv">Download CSV</button>' +
