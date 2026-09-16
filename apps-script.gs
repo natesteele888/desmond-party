@@ -67,23 +67,29 @@ function getSheet_() {
   return sh;
 }
 
-/** Adds any missing columns without disturbing RSVPs already in the sheet. */
+/**
+ * Adds any missing columns without disturbing RSVPs already in the sheet.
+ *
+ * Writes the header row in one go on purpose. Inserting a column and then
+ * asking for getLastColumn() does not work: an empty column has no content,
+ * so the sheet still reports the old width and the new header lands on top
+ * of an existing one.
+ */
 function ensureHeaders_(sh) {
-  if (sh.getLastRow() === 0) {
-    sh.appendRow(HEADERS);
-  } else {
-    const width = Math.max(sh.getLastColumn(), 1);
-    const have = sh.getRange(1, 1, 1, width).getValues()[0].map(function (h) { return String(h).trim(); });
-    HEADERS.forEach(function (h) {
-      if (have.indexOf(h) === -1) {
-        sh.insertColumnAfter(sh.getLastColumn());
-        sh.getRange(1, sh.getLastColumn()).setValue(h);
-        have.push(h);
-      }
-    });
-  }
+  const width = Math.max(sh.getLastColumn(), 1);
+  const have = sh.getLastRow() === 0
+    ? []
+    : sh.getRange(1, 1, 1, width).getValues()[0].map(function (h) { return String(h).trim(); });
+
+  const row = have.slice();
+  while (row.length && !row[row.length - 1]) row.pop();   // drop trailing blanks
+  HEADERS.forEach(function (h) {
+    if (row.indexOf(h) === -1) row.push(h);
+  });
+
+  sh.getRange(1, 1, 1, row.length).setValues([row]);
   sh.setFrozenRows(1);
-  sh.getRange(1, 1, 1, sh.getLastColumn()).setFontWeight('bold');
+  sh.getRange(1, 1, 1, row.length).setFontWeight('bold');
 }
 
 /** Map of header name -> 1-based column number. Order-proof. */
