@@ -182,6 +182,20 @@
   .peek{display:block;margin:0 auto;padding:10px;background:none;border:0;color:var(--muted);
         font-size:14px;text-decoration:underline;cursor:pointer;font-family:inherit}
 
+  /* ---------- Front door ---------- */
+  .gate{text-align:center}
+  .gate .lock{width:52px;height:52px;margin:0 auto 12px;display:block;color:var(--royal)}
+  .gate h2{margin:0 0 8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--navy)}
+  .gate p{margin:0 auto 20px;max-width:32ch;color:var(--muted);font-size:16px}
+  .gate .field{text-align:center;letter-spacing:.04em}
+  .gate .send{margin-top:14px}
+  .shake{animation:shake .4s}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px)} 20%,80%{transform:translateX(4px)}
+    30%,50%,70%{transform:translateX(-7px)} 40%,60%{transform:translateX(7px)}
+  }
+  @media (prefers-reduced-motion:reduce){ .shake{animation:none} }
+
   @media (prefers-reduced-motion:reduce){
     .pop{animation:none}
     .choice{transition:none}
@@ -197,6 +211,23 @@
 </header>
 
 <main>
+  <!-- Front door: password before anyone can RSVP -->
+  <section class="panel gate" id="gate" hidden aria-labelledby="gate-title">
+    <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/>
+      <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>
+      <circle cx="12" cy="15.5" r="1.4" fill="currentColor" stroke="none"/>
+    </svg>
+    <h2 id="gate-title">Invited guests only</h2>
+    <p>Desmond&rsquo;s invitation has the password on it. Pop it in below.</p>
+    <label class="small" for="pass" style="margin-top:0">Party password</label>
+    <input class="field" id="pass" type="text" autocomplete="off" autocapitalize="off"
+           autocorrect="off" spellcheck="false" placeholder="Password" maxlength="40">
+    <p class="error" id="gate-error" role="alert" hidden style="margin:14px 0 0"></p>
+    <button type="button" class="send" id="unlock">Let me in</button>
+  </section>
+
   <!-- Guest RSVP -->
   <section class="panel" id="rsvp-panel" aria-labelledby="rsvp-title">
     <h2 id="rsvp-title" hidden>RSVP</h2>
@@ -266,7 +297,7 @@
   </section>
 
   <!-- The plan -->
-  <section class="panel plan" aria-labelledby="plan-title">
+  <section class="panel plan" id="plan-panel" aria-labelledby="plan-title">
     <h2 id="plan-title">The game plan</h2>
     <ol class="timeline">
       <li>
@@ -299,6 +330,16 @@
    Leave it blank to preview (RSVPs won't be saved).
    ========================================================= */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRh2JGyKnjVPDyxoixomBzBbOeTKMWdXNQiNX9XLdjWbOWxByRJLNrmBEE0VzyODtToA/exec';
+
+/* The party password is stored as a salted SHA-256, so it isn't sitting in
+   plain sight in the page source. Case and spaces don't matter to it.
+   To change it, run this in any browser console and paste the result below:
+     crypto.subtle.digest('SHA-256', new TextEncoder().encode('desmond-2026:' +
+       'yourpassword'.toLowerCase().trim())).then(b =>
+       console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
+   Then change PARTY_PASSWORD in apps-script.gs to match. */
+const PASS_SALT = 'desmond-2026:';
+const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd736747f';
 
 (function(){
   const $ = s => document.querySelector(s);
@@ -364,7 +405,8 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRh2JGyKnjVPDyxoixo
       count: yes ? state.count : 0,
       email: yes ? email : '',
       phone: yes ? $('#phone').value.trim() : '',
-      notes: $('#notes').value.trim()
+      notes: $('#notes').value.trim(),
+      pass: savedPass() || ''
     };
 
     const btn = $('#send');
@@ -374,7 +416,9 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRh2JGyKnjVPDyxoixo
       showDone(payload);
       loadHeadcount();
     }catch(err){
-      showError("Your RSVP didn't send. Check your connection and tap Send RSVP again.");
+      showError(/password/i.test(String(err && err.message))
+        ? 'The party password has changed. Reload the page and enter the new one.'
+        : "Your RSVP didn't send. Check your connection and tap Send RSVP again.");
     }finally{
       btn.disabled = false; btn.textContent = 'Send RSVP';
     }
@@ -593,6 +637,70 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRh2JGyKnjVPDyxoixo
 
   function total(n, label){ return '<div class="total"><b>' + (n||0) + '</b><span>' + label + '</span></div>'; }
 
+  /* ---------- Front door ---------- */
+  const tidyPass = v => String(v || '').trim().toLowerCase();
+
+  async function hashPass(v){
+    if(!(window.crypto && crypto.subtle)) return null;   // http:// or an old browser
+    const bytes = new TextEncoder().encode(PASS_SALT + tidyPass(v));
+    const buf = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function savedPass(){
+    try{ return localStorage.getItem('desmond-pass'); }catch(e){ return null; }
+  }
+
+  function openDoor(){
+    $('#gate').hidden = true;
+    $('#rsvp-panel').hidden = false;
+    $('#plan-panel').hidden = false;
+    loadHeadcount();
+    wireSecretEntry();
+  }
+
+  async function tryUnlock(value, fromGate){
+    const hash = await hashPass(value);
+    // No crypto (plain http)? Let the Apps Script be the judge on submit.
+    const good = hash === null ? !!tidyPass(value) : hash === PASS_HASH;
+    if(!good) return false;
+    try{ localStorage.setItem('desmond-pass', tidyPass(value)); }catch(e){}
+    if(fromGate) openDoor();
+    return true;
+  }
+
+  async function startGate(){
+    // No backend yet, or the host is looking: skip the door.
+    if(!SCRIPT_URL) return openDoor();
+
+    const fromLink = params.get('p');
+    if(fromLink && await tryUnlock(fromLink, false)){
+      history.replaceState(null, '', location.pathname);
+      return openDoor();
+    }
+    const remembered = savedPass();
+    if(remembered && await tryUnlock(remembered, false)) return openDoor();
+
+    $('#gate').hidden = false;
+    $('#rsvp-panel').hidden = true;
+    $('#plan-panel').hidden = true;
+
+    const input = $('#pass'), err = $('#gate-error'), btn = $('#unlock');
+    const attempt = async () => {
+      if(await tryUnlock(input.value, true)) return;
+      err.textContent = "That's not it. Check the invitation and try again.";
+      err.hidden = false;
+      $('#gate').classList.remove('shake');
+      void $('#gate').offsetWidth;          // restart the animation
+      $('#gate').classList.add('shake');
+      input.select();
+    };
+    btn.addEventListener('click', attempt);
+    input.addEventListener('input', () => { err.hidden = true; });
+    input.addEventListener('keydown', e => { if(e.key === 'Enter') attempt(); });
+    input.focus();
+  }
+
   /* ---------- Secret way in: tap "Go Blue Knights!" three times ---------- */
   function wireSecretEntry(){
     const footer = document.querySelector('footer');
@@ -627,7 +735,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRh2JGyKnjVPDyxoixo
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  if(hostKey){ loadHost(); } else { loadHeadcount(); wireSecretEntry(); }
+  if(hostKey){ loadHost(); } else { startGate(); }
 })();
 </script>
 </body>

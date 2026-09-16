@@ -9,6 +9,7 @@
 
 // ============ THE ONLY THINGS YOU MIGHT WANT TO CHANGE ============
 
+const PARTY_PASSWORD = 'GoBengals';                // front-door password on the invitation
 const HOST_KEY   = 'bluenights12';                 // your secret word for the guest list
 const HOST_EMAIL = '';                             // blank = the Google account running this script
 const PARTY_ISO  = '2026-10-02T17:00:00-04:00';    // Fri Oct 2, 2026, 5:00 PM Eastern
@@ -43,6 +44,7 @@ function setup() {
     '                -> 3 days before (' + fmt_(addDays_(partyDate_(), -3)) + ')',
     '                -> morning of    (' + fmt_(partyDate_()) + ')',
     'Alerts go to:   ' + hostEmail_(),
+    'Party password: ' + (PARTY_PASSWORD || '(none - anyone can RSVP)'),
     '',
     'YOUR GUEST LIST LINK (bookmark this, do not share it):',
     SITE_URL + '?host=' + encodeURIComponent(HOST_KEY),
@@ -128,6 +130,11 @@ function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) return json_({ ok: false, error: 'No data' });
     const d = JSON.parse(e.postData.contents);
+
+    // Front door. Blank out PARTY_PASSWORD above to let anyone RSVP.
+    if (PARTY_PASSWORD && tidyPass_(d.pass) !== tidyPass_(PARTY_PASSWORD)) {
+      return json_({ ok: false, error: 'Wrong party password' });
+    }
 
     const name = tidyName_(d.name);
     if (!name) return json_({ ok: false, error: 'Missing name' });
@@ -357,6 +364,7 @@ function tidyName_(raw) {
   }
   return n;
 }
+function tidyPass_(s) { return String(s || '').trim().toLowerCase(); }
 function validEmail_(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s || '').trim()); }
 function esc_(s) {
   return String(s).replace(/[&<>"]/g, function (c) {
@@ -373,6 +381,7 @@ function healthCheck() {
     'Coming (people):   ' + totals_(rows).coming,
     'With email:        ' + rows.filter(function (r) { return r.attending && r.email; }).length,
     'Days until party:  ' + daysUntilParty_(),
+    'Party password:    ' + (PARTY_PASSWORD || '(none)'),
     'Alerts go to:      ' + hostEmail_(),
     'Emails left today: ' + MailApp.getRemainingDailyQuota(),
     'Reminder triggers: ' + ScriptApp.getProjectTriggers().filter(function (t) {

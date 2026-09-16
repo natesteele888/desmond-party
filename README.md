@@ -28,6 +28,7 @@ Select everything in the editor, delete it, and paste all of `apps-script.gs`.
 Click the 💾 save icon.
 
 Optional, near the top of the file:
+- `PARTY_PASSWORD` — the front-door password. Currently `GoBengals`.
 - `HOST_KEY` — your secret word for the guest list. Currently `bluenights12`.
 - `HOST_EMAIL` — leave blank and alerts go to whichever Google account you're signed in as.
 
@@ -68,14 +69,60 @@ updates in a minute or two.
 > change and you can skip this step entirely.
 
 ### 6. Check it
-Open the live site, RSVP as "Test Test", then delete that row from the Sheet.
-You should get an email as soon as the RSVP lands.
+Open the live site. You should get the password screen — enter **GoBengals**,
+then RSVP as "Test Test" and delete that row from the Sheet afterwards. You
+should get an email as soon as the RSVP lands.
+
+---
+
+## The party password
+
+The site asks for **GoBengals** before it shows the RSVP form or the game plan.
+Capitals and stray spaces don't matter — `gobengals`, `GOBENGALS` and
+`  GoBengals ` all work.
+
+It's checked twice: once on the page, and again by the Apps Script when the RSVP
+comes in, so nobody can skip the form and post straight to the web app URL.
+
+Two ways to give it to people:
+
+- Put it on the invitation and let them type it.
+- Send a link that opens the door for them:
+  `https://natesteele888.github.io/desmond-party/?p=GoBengals`
+  The page strips the password out of the address bar once it's in.
+
+Either way the browser remembers it, so guests only do this once per device.
+
+**Worth knowing:** on a plain GitHub Pages site this is a doorbell, not a
+deadbolt. The password isn't written in the page source — only a scrambled
+(hashed) version is — but someone determined could still work around it. For
+keeping strangers and randoms out of a 12-year-old's party, it's the right
+amount of lock.
+
+### Changing it later
+
+1. In `apps-script.gs`, change `PARTY_PASSWORD`, then re-deploy a new version.
+2. Generate the matching scrambled version — paste this in any browser console
+   (F12 → Console), swapping in your new password:
+
+```js
+crypto.subtle.digest('SHA-256', new TextEncoder().encode('desmond-2026:' +
+  'yournewpassword'.toLowerCase().trim())).then(b =>
+  console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
+```
+
+3. Paste the result into `PASS_HASH` in `index.html`, then commit and push.
+
+To drop the password entirely, set `PARTY_PASSWORD = ''` in the script and
+delete the `PASS_HASH` line's value in `index.html`.
 
 ---
 
 ## Seeing who's coming
 
 Three ways, all the same list:
+
+Your host link skips the password screen entirely.
 
 1. **Tap "Go Blue Knights!" three times** at the bottom of the site, enter your
    host key. After the first time, that device shows a small **Guest list** link
@@ -144,6 +191,10 @@ it says 0, run `setup` again.
 
 **Host link says the key doesn't match** — `HOST_KEY` in the script and the
 `?host=` value have to be identical, including capitals.
+
+**"Wrong party password" when RSVPing** — `PARTY_PASSWORD` in the script and
+`PASS_HASH` in `index.html` have drifted apart. Redo the two steps under
+*Changing it later*.
 
 After editing the Apps Script, always **Deploy → Manage deployments → ✏️ →
 Version: New version**, or the live site keeps running the old code.
