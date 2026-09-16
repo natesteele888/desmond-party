@@ -20,7 +20,8 @@ const NOTIFY_HOST_ON_RSVP = true;                  // email you every time someo
 
 const SHEET_NAME = 'RSVPs';
 const TZ = 'America/New_York';
-const HEADERS = ['Updated', 'Name', 'Attending', 'Pizza', 'Group size', 'Email', 'Phone', 'Notes'];
+const HEADERS = ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Cheese', 'Pepperoni',
+                 'No pizza', 'Cupcakes', 'Email', 'Phone', 'Notes'];
 
 /**
  * RUN THIS ONCE. Creates the sheet, installs the daily reminder trigger,
@@ -103,8 +104,12 @@ function readRows_(sh) {
       row: i + 2,
       name: String(get('Name') || '').trim(),
       attending: String(get('Attending')).trim().toLowerCase() === 'yes',
-      pizza: String(get('Pizza') || ''),
       count: Number(get('Group size')) || 0,
+      who: String(get('Who') || ''),
+      cheese: Number(get('Cheese')) || 0,
+      pepperoni: Number(get('Pepperoni')) || 0,
+      noPizza: Number(get('No pizza')) || 0,
+      cupcakes: Number(get('Cupcakes')) || 0,
       email: String(get('Email') || '').trim(),
       phone: String(get('Phone') || '').trim(),
       notes: String(get('Notes') || '')
@@ -140,8 +145,8 @@ function doPost(e) {
     if (!name) return json_({ ok: false, error: 'Missing name' });
 
     const attending = d.attending === true || d.attending === 'true';
-    const pizza = attending && (d.pizza === 'Cheese' || d.pizza === 'Pepperoni') ? d.pizza : '';
-    const count = attending ? Math.min(10, Math.max(1, parseInt(d.count, 10) || 1)) : 0;
+    const party = attending ? readParty_(d, name) : blankParty_();
+    const count = party.count;
     const email = validEmail_(d.email) ? String(d.email).trim() : '';
     const phone = String(d.phone || '').trim().slice(0, 25);
     const notes = String(d.notes || '').trim().slice(0, 200);
@@ -156,19 +161,29 @@ function doPost(e) {
     const isNew = !target;
     if (isNew) target = sh.getLastRow() + 1;
 
+    // Hang on to contact details when an edit comes in without them - losing an
+    // address here would quietly drop that family from the reminder emails.
+    const had = isNew ? null : rows.filter(function (x) { return x.row === target; })[0];
+    const keepEmail = email || (had ? had.email : '');
+    const keepPhone = phone || (had ? had.phone : '');
+
     const put = function (header, value) {
       if (c[header]) sh.getRange(target, c[header]).setValue(value);
     };
     put('Updated', new Date());
     put('Name', name);
     put('Attending', attending ? 'Yes' : 'No');
-    put('Pizza', pizza);
     put('Group size', count);
-    put('Email', email);
-    put('Phone', phone);
+    put('Who', party.who);
+    put('Cheese', party.cheese);
+    put('Pepperoni', party.pepperoni);
+    put('No pizza', party.noPizza);
+    put('Cupcakes', party.cupcakes);
+    put('Email', keepEmail);
+    put('Phone', keepPhone);
     put('Notes', notes);
 
-    if (NOTIFY_HOST_ON_RSVP) notifyHost_(name, attending, count, pizza, notes, email, phone, isNew);
+    if (NOTIFY_HOST_ON_RSVP) notifyHost_(name, attending, party, notes, keepEmail, keepPhone, isNew);
 
     return json_({ ok: true });
   } catch (err) {
@@ -178,7 +193,8 @@ function doPost(e) {
   }
 }
 
-function notifyHost_(name, attending, count, pizza, notes, email, phone, isNew) {
+function notifyHost_(name, attending, party, notes, email, phone, isNew) {
+  const count = party.count;
   try {
     const t = totals_(readRows_(getSheet_()));
     MailApp.sendEmail({
@@ -190,12 +206,13 @@ function notifyHost_(name, attending, count, pizza, notes, email, phone, isNew) 
         '<p><b>' + esc_(name) + '</b> just ' + (isNew ? 'RSVP\'d' : 'updated their RSVP') + '.</p>' +
         '<ul>' +
         '<li>' + (attending ? 'Coming - ' + count + (count === 1 ? ' person' : ' people') : 'Not coming') + '</li>' +
-        (pizza ? '<li>Pizza: ' + esc_(pizza) + '</li>' : '') +
+        (party.who ? '<li>' + esc_(party.who).replace(/ \| /g, '<br>') + '</li>' : '') +
+        (orderLine_(party) ? '<li><b>Order: ' + esc_(orderLine_(party)) + '</b></li>' : '') +
         (email ? '<li>Email: ' + esc_(email) + '</li>' : '<li>No email - they will not get reminders</li>') +
         (phone ? '<li>Phone: ' + esc_(phone) + '</li>' : '') +
         (notes ? '<li>Notes: ' + esc_(notes) + '</li>' : '') +
         '</ul>' +
-        '<p><b>Running total: ' + t.coming + ' coming</b> (' + t.cheese + ' cheese, ' + t.pepperoni + ' pepperoni)</p>' +
+        '<p><b>Running total: ' + t.coming + ' coming</b><br>' + esc_(orderLine_(t) || 'nothing ordered yet') + '</p>' +
         '<p><a href="' + SITE_URL + '?host=' + encodeURIComponent(HOST_KEY) + '">Open the guest list</a></p>' +
         '</div>'
     });
@@ -216,8 +233,9 @@ function doGet(e) {
 
   if (e && e.parameter && e.parameter.host === HOST_KEY) {
     t.rows = rows.map(function (r) {
-      return { name: r.name, attending: r.attending, pizza: r.pizza, count: r.count,
-               email: r.email, phone: r.phone, notes: r.notes };
+      return { name: r.name, attending: r.attending, count: r.count, who: r.who,
+               cheese: r.cheese, pepperoni: r.pepperoni, noPizza: r.noPizza,
+               cupcakes: r.cupcakes, email: r.email, phone: r.phone, notes: r.notes };
     });
     t.reminders = {
       threeDay: !!props_().getProperty('sent_3day'),
@@ -229,18 +247,66 @@ function doGet(e) {
 }
 
 function totals_(rows) {
-  const t = { coming: 0, cheese: 0, pepperoni: 0, notComing: 0, families: 0 };
+  const t = { coming: 0, cheese: 0, pepperoni: 0, noPizza: 0, cupcakes: 0, notComing: 0, families: 0 };
   rows.forEach(function (r) {
     if (r.attending) {
       t.coming += r.count;
       t.families++;
-      if (r.pizza === 'Cheese') t.cheese += r.count;
-      if (r.pizza === 'Pepperoni') t.pepperoni += r.count;
+      t.cheese += r.cheese;
+      t.pepperoni += r.pepperoni;
+      t.noPizza += r.noPizza;
+      t.cupcakes += r.cupcakes;
     } else {
       t.notComing++;
     }
   });
   return t;
+}
+
+/* ---------- who's in each group ---------- */
+
+function blankParty_() {
+  return { count: 0, who: '', cheese: 0, pepperoni: 0, noPizza: 0, cupcakes: 0 };
+}
+
+/**
+ * Turns the per-person list from the form into counts plus one readable line.
+ * Falls back to a single guest if an older page posts without a list.
+ */
+function readParty_(d, leadName) {
+  const out = blankParty_();
+  let list = Array.isArray(d.guests) ? d.guests.slice(0, 10) : [];
+  if (!list.length) list = [{ name: leadName, pizza: d.pizza, cupcake: true }];
+
+  const parts = [];
+  list.forEach(function (g, i) {
+    g = g || {};
+    const who = tidyName_(String(g.name || '').replace(/\|/g, ' ')) ||
+                (i === 0 ? leadName : 'Guest ' + (i + 1));
+    const pizza = (g.pizza === 'Cheese' || g.pizza === 'Pepperoni') ? g.pizza : 'None';
+    const cupcake = g.cupcake === true || g.cupcake === 'true';
+
+    if (pizza === 'Cheese') out.cheese++;
+    else if (pizza === 'Pepperoni') out.pepperoni++;
+    else out.noPizza++;
+    if (cupcake) out.cupcakes++;
+
+    parts.push(who + ' \u2014 ' + pizza.toLowerCase() + (cupcake ? ' + cupcake' : ', no cupcake'));
+  });
+
+  out.count = list.length;
+  out.who = parts.join(' | ');
+  return out;
+}
+
+/** Short order summary, e.g. "2 cheese, 1 pepperoni, 3 cupcakes". */
+function orderLine_(p) {
+  const bits = [];
+  if (p.cheese) bits.push(p.cheese + ' cheese');
+  if (p.pepperoni) bits.push(p.pepperoni + ' pepperoni');
+  if (p.noPizza) bits.push(p.noPizza + ' no pizza');
+  if (p.cupcakes) bits.push(p.cupcakes + ' cupcake' + (p.cupcakes === 1 ? '' : 's'));
+  return bits.join(', ');
 }
 
 // ---------------------------------------------------------------- reminders
@@ -322,7 +388,7 @@ function reminderMail_(kind, r) {
         '<p>Hi ' + first + ' - just a heads up that Desmond\'s birthday tailgate is <b>this Friday, ' +
         'October 2 at 5:00 PM</b>.</p>' + plan +
         '<p>We have you down for <b>' + r.count + (r.count === 1 ? ' person' : ' people') + '</b>' +
-        (r.pizza ? ' and <b>' + esc_(r.pizza.toLowerCase()) + ' pizza</b>' : '') + '.</p>' +
+        (orderLine_(r) ? ': ' + esc_(orderLine_(r)) : '') + '.</p>' +
         '<p>See you Friday!</p>')
     };
   }
@@ -338,7 +404,8 @@ function reminderMail_(kind, r) {
 
 /** Sends both sample reminders to you only, so you can see what guests get. */
 function sendTestReminder() {
-  const sample = { name: 'Test Parent', count: 2, pizza: 'Cheese', email: hostEmail_() };
+  const sample = { name: 'Test Parent', count: 2, cheese: 1, pepperoni: 1, noPizza: 0,
+                   cupcakes: 2, email: hostEmail_() };
   ['3day', 'dayof'].forEach(function (kind) {
     const m = reminderMail_(kind, sample);
     MailApp.sendEmail({ to: hostEmail_(), subject: '[TEST] ' + m.subject, htmlBody: m.html });
@@ -379,6 +446,7 @@ function healthCheck() {
   const out = [
     'Sheet rows:        ' + rows.length,
     'Coming (people):   ' + totals_(rows).coming,
+    'Food order:        ' + (orderLine_(totals_(rows)) || 'nothing yet'),
     'With email:        ' + rows.filter(function (r) { return r.attending && r.email; }).length,
     'Days until party:  ' + daysUntilParty_(),
     'Party password:    ' + (PARTY_PASSWORD || '(none)'),

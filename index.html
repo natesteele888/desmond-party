@@ -112,6 +112,35 @@
   .stepper output{min-width:44px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;color:var(--navy)}
   .stepper .unit{color:var(--muted);font-size:16px}
 
+  /* ---------- Per-person roster ---------- */
+  #roster{margin-top:18px}
+  .person{padding:14px 0;border-top:2px dashed var(--line)}
+  .p-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .p-num{
+    flex:none;width:26px;height:26px;border-radius:50%;background:var(--sky);color:var(--royal);
+    display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;
+  }
+  .p-name{font-weight:600;font-size:18px;color:var(--navy);overflow-wrap:anywhere}
+  .p-name.empty{color:var(--muted);font-weight:500}
+  .p-input{
+    flex:1;min-width:0;min-height:44px;padding:8px 12px;border:2px solid var(--line);
+    border-radius:11px;background:var(--white);font-size:17px;
+  }
+  .p-input:focus{border-color:var(--royal);outline:none;box-shadow:0 0 0 3px rgba(58,99,255,.2)}
+  .p-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .p-label{flex:none;width:52px;font-size:13px;color:var(--muted);font-weight:600}
+  .pills{display:flex;gap:5px;flex:1;min-width:0}
+  .pill{
+    flex:1 1 auto;min-width:0;min-height:38px;padding:0 6px;
+    border:2px solid var(--line);border-radius:999px;
+    background:var(--white);color:var(--muted);cursor:pointer;white-space:nowrap;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;
+    -webkit-tap-highlight-color:transparent;transition:background-color .12s,color .12s,border-color .12s;
+  }
+  .pills.two .pill{flex:0 1 84px}
+  .pill[aria-pressed="true"]{background:var(--royal);border-color:var(--royal);color:var(--white)}
+  @media (prefers-reduced-motion:reduce){ .pill{transition:none} }
+
   .error{margin:0 0 14px;color:var(--error);font-weight:600;font-size:16px}
   .send{
     width:100%;min-height:62px;border:0;border-radius:16px;background:var(--royal);color:var(--white);cursor:pointer;
@@ -170,6 +199,7 @@
   .guest .g-notes{display:block;font-size:14px;color:var(--muted)}
   .guest .g-meta{text-align:right;font-size:15px;white-space:nowrap}
   .guest.no .g-name{color:var(--muted)}
+  .guest .g-who{display:block;font-size:14px;color:var(--ink);margin:2px 0 3px}
   .guest .g-contact{display:block;font-size:14px}
   .guest .g-contact a{color:var(--royal);text-decoration:none}
   .reminder-note{font-size:15px;color:var(--muted)}
@@ -259,19 +289,16 @@
         <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Jordan Smith" maxlength="60">
       </div>
 
-      <div class="step" id="pizza-step" hidden>
-        <div class="step-head"><span class="num">3</span><h2 id="pizza-label">Pizza preference</h2></div>
-        <div class="choices" role="group" aria-labelledby="pizza-label">
-          <button type="button" class="choice" data-group="pizza" data-value="Cheese" aria-pressed="false">Cheese</button>
-          <button type="button" class="choice" data-group="pizza" data-value="Pepperoni" aria-pressed="false">Pepperoni</button>
-        </div>
-        <label class="small" id="count-label">How many in your group?</label>
+      <div class="step" id="group-step" hidden>
+        <div class="step-head"><span class="num">3</span><h2 id="count-label">How many are coming?</h2></div>
+        <p class="hint">Counting your player</p>
         <div class="stepper" role="group" aria-labelledby="count-label">
           <button type="button" id="minus" aria-label="One fewer">−</button>
           <output id="count" aria-live="polite">1</output>
           <button type="button" id="plus" aria-label="One more">+</button>
           <span class="unit" id="count-unit">person</span>
         </div>
+        <div id="roster"></div>
       </div>
 
       <div class="step" id="contact-step" hidden>
@@ -349,7 +376,7 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
 
 (function(){
   const $ = s => document.querySelector(s);
-  const state = { attending:null, pizza:null, count:1 };
+  const state = { attending:null, count:1, guests:[{ name:'', pizza:null, cupcake:true }] };
   const params = new URLSearchParams(location.search);
   const hostKey = params.get('host');
   let demoRows = []; // used only in preview mode
@@ -372,7 +399,7 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
   function revealRest(coming){
     $('#name-step').hidden = false;
     $('#send-step').hidden = false;
-    $('#pizza-step').hidden = !coming;
+    $('#group-step').hidden = !coming;
     $('#contact-step').hidden = !coming;
 
     $('#name-label').textContent = coming ? "Who's coming?" : 'Who should we mark down?';
@@ -385,15 +412,70 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
     $('#send').textContent = coming ? 'Send RSVP' : 'Send my reply';
   }
 
-  /* ---------- Group size ---------- */
+  /* ---------- Group size + who's in it ---------- */
   function renderCount(){
     $('#count').textContent = state.count;
     $('#count-unit').textContent = state.count === 1 ? 'person' : 'people';
     $('#minus').disabled = state.count <= 1;
     $('#plus').disabled = state.count >= 10;
+    renderRoster();
   }
   $('#minus').addEventListener('click', () => { state.count = Math.max(1, state.count-1); renderCount(); });
   $('#plus').addEventListener('click', () => { state.count = Math.min(10, state.count+1); renderCount(); });
+
+  const playerName = () => $('#name').value.trim().replace(/\s+/g,' ');
+
+  function guestLabel(i){
+    if(i === 0) return playerName() || 'your player';
+    return state.guests[i].name.trim() || 'guest ' + (i + 1);
+  }
+
+  function pillRow(label, kind, i, opts, current, extra){
+    return '<div class="p-row"><span class="p-label">' + label + '</span>' +
+      '<div class="pills' + (extra ? ' ' + extra : '') + '" role="group" aria-label="' +
+      label + ' for guest ' + (i+1) + '">' +
+      opts.map(o =>
+        '<button type="button" class="pill" data-kind="' + kind + '" data-i="' + i +
+        '" data-value="' + o[0] + '" aria-pressed="' + (current === o[0]) + '">' + o[1] + '</button>'
+      ).join('') + '</div></div>';
+  }
+
+  function personCard(g, i){
+    const who = i === 0
+      ? '<span class="p-name' + (playerName() ? '' : ' empty') + '" id="p-name-0">' +
+        escapeHTML(playerName() || 'Your player') + '</span>'
+      : '<input class="p-input" type="text" data-i="' + i + '" autocomplete="off" ' +
+        'autocapitalize="words" placeholder="Name (optional)" maxlength="60" value="' +
+        escapeHTML(g.name) + '">';
+    return '<div class="person">' +
+      '<div class="p-head"><span class="p-num">' + (i+1) + '</span>' + who + '</div>' +
+      pillRow('Pizza', 'pizza', i, [['Cheese','Cheese'],['Pepperoni','Pepperoni'],['None','None']], g.pizza) +
+      pillRow('Cupcake', 'cupcake', i, [['yes','Yes'],['no','No']], g.cupcake ? 'yes' : 'no', 'two') +
+    '</div>';
+  }
+
+  function renderRoster(){
+    while(state.guests.length < state.count) state.guests.push({ name:'', pizza:null, cupcake:true });
+    state.guests.length = state.count;
+    $('#roster').innerHTML = state.guests.map(personCard).join('');
+  }
+
+  $('#roster').addEventListener('click', e => {
+    const btn = e.target.closest('.pill');
+    if(!btn) return;
+    const i = Number(btn.dataset.i);
+    if(btn.dataset.kind === 'pizza') state.guests[i].pizza = btn.dataset.value;
+    else state.guests[i].cupcake = btn.dataset.value === 'yes';
+    btn.parentNode.querySelectorAll('.pill').forEach(p =>
+      p.setAttribute('aria-pressed', String(p === btn)));
+    hideError();
+  });
+
+  $('#roster').addEventListener('input', e => {
+    const inp = e.target.closest('.p-input');
+    if(inp) state.guests[Number(inp.dataset.i)].name = inp.value;
+  });
+
   renderCount();
 
   /* ---------- Errors ---------- */
@@ -402,7 +484,14 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
     if(focusEl) focusEl.focus();
   }
   function hideError(){ $('#error').hidden = true; }
-  $('#name').addEventListener('input', hideError);
+  $('#name').addEventListener('input', () => {
+    hideError();
+    const el = document.getElementById('p-name-0');
+    if(el){
+      el.textContent = playerName() || 'Your player';
+      el.classList.toggle('empty', !playerName());
+    }
+  });
   $('#email').addEventListener('input', hideError);
 
   /* ---------- Submit ---------- */
@@ -410,11 +499,16 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
     if(!state.attending) return showError('Tap Yes or No to let us know if you can make it.');
     const yes = state.attending === 'yes';
 
-    const name = $('#name').value.trim().replace(/\s+/g,' ');
+    const name = playerName();
     if(!name) return showError(yes
       ? "Add your player's name so Desmond knows who's coming."
       : "Add your player's name so we know who to mark down.", $('#name'));
-    if(yes && !state.pizza) return showError('Pick cheese or pepperoni.');
+
+    if(yes){
+      const missing = state.guests.findIndex(g => !g.pizza);
+      if(missing >= 0) return showError('Pick a pizza for ' + guestLabel(missing) +
+        " \u2014 tap None if they're not having any.");
+    }
 
     const email = $('#email').value.trim();
     if(yes && email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
@@ -423,8 +517,12 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
     const payload = {
       name,
       attending: yes,
-      pizza: yes ? state.pizza : '',
       count: yes ? state.count : 0,
+      guests: yes ? state.guests.map((g, i) => ({
+        name: i === 0 ? name : g.name.trim(),
+        pizza: g.pizza,
+        cupcake: !!g.cupcake
+      })) : [],
       email: yes ? email : '',
       phone: yes ? $('#phone').value.trim() : '',
       notes: $('#notes').value.trim(),
@@ -493,9 +591,10 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
     const done = $('#done');
     if(p.attending){
       const who = p.count === 1 ? 'Just you' : p.count + ' people';
+      const order = orderSummary(p.guests);
       done.innerHTML =
         '<h2 class="pop">See you there, ' + first + '!</h2>' +
-        '<p class="summary">' + who + ', ' + p.pizza.toLowerCase() + ' pizza</p>' +
+        '<p class="summary">' + who + (order ? '<br>' + escapeHTML(order) : '') + '</p>' +
         '<p>Meet at the upper high school parking lot on Friday, Oct 2 at 5:00&nbsp;PM.</p>' +
         (p.email
           ? '<p class="reminder-note">We&rsquo;ll email ' + escapeHTML(p.email) + ' three days before and the morning of.</p>'
@@ -519,6 +618,23 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
       done.hidden = true; $('#form').hidden = false; $('#name').focus();
     });
     document.getElementById('rsvp-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  /** "2 cheese, 1 pepperoni, 3 cupcakes" */
+  function orderSummary(guests){
+    let cheese = 0, pepperoni = 0, none = 0, cupcakes = 0;
+    (guests || []).forEach(g => {
+      if(g.pizza === 'Cheese') cheese++;
+      else if(g.pizza === 'Pepperoni') pepperoni++;
+      else none++;
+      if(g.cupcake) cupcakes++;
+    });
+    const bits = [];
+    if(cheese) bits.push(cheese + ' cheese');
+    if(pepperoni) bits.push(pepperoni + ' pepperoni');
+    if(none) bits.push(none + ' no pizza');
+    if(cupcakes) bits.push(cupcakes + ' cupcake' + (cupcakes === 1 ? '' : 's'));
+    return bits.join(', ');
   }
 
   function icsHref(){
@@ -556,13 +672,15 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
   }
 
   function summarize(rows){
-    const t = { coming:0, cheese:0, pepperoni:0, notComing:0, families:0 };
+    const t = { coming:0, cheese:0, pepperoni:0, noPizza:0, cupcakes:0, notComing:0, families:0 };
     rows.forEach(r => {
       if(r.attending){
         t.coming += r.count;
         t.families++;
-        if(r.pizza === 'Cheese') t.cheese += r.count;
-        if(r.pizza === 'Pepperoni') t.pepperoni += r.count;
+        t.cheese += r.cheese || 0;
+        t.pepperoni += r.pepperoni || 0;
+        t.noPizza += r.noPizza || 0;
+        t.cupcakes += r.cupcakes || 0;
       } else t.notComing++;
     });
     return t;
@@ -601,6 +719,8 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
           total(data.notComing, "can't make it") +
           total(data.cheese, 'cheese') +
           total(data.pepperoni, 'pepperoni') +
+          total(data.noPizza, 'no pizza') +
+          total(data.cupcakes, 'cupcakes') +
         '</div>' +
         remindersCard(data, coming.length, withEmail) +
         (rows.length
@@ -655,19 +775,24 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
       r.email ? '<a href="mailto:' + encodeURI(r.email) + '">' + escapeHTML(r.email) + '</a>' : '',
       r.phone ? '<a href="tel:' + encodeURI(r.phone.replace(/[^0-9+]/g, '')) + '">' + escapeHTML(r.phone) + '</a>' : ''
     ].filter(Boolean).join(' &middot; ');
+    // "Who" arrives as "Ada — cheese + cupcake | Sam — none, no cupcake"
+    const who = (r.who || '').split(' | ').filter(Boolean);
     return '<div class="guest' + (r.attending ? '' : ' no') + '">' +
       '<div><span class="g-name">' + escapeHTML(r.name) + '</span>' +
+        (who.length ? '<span class="g-who">' + who.map(escapeHTML).join('<br>') + '</span>' : '') +
         (contact ? '<span class="g-contact">' + contact + '</span>' : '') +
         (r.notes ? '<span class="g-notes">' + escapeHTML(r.notes) + '</span>' : '') + '</div>' +
-      '<div class="g-meta">' + (r.attending ? r.count + ' · ' + escapeHTML(r.pizza) : 'Not coming') + '</div>' +
+      '<div class="g-meta">' + (r.attending ? r.count + (r.count === 1 ? ' person' : ' people') : 'Not coming') + '</div>' +
     '</div>';
   }
 
   function downloadCSV(){
     if(!hostData) return;
     const cell = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-    const csv = [['Name','Attending','Group size','Pizza','Email','Phone','Notes']]
-      .concat(hostData.rows.map(r => [r.name, r.attending ? 'Yes' : 'No', r.count, r.pizza, r.email, r.phone, r.notes]))
+    const csv = [['Name','Attending','Group size','Who','Cheese','Pepperoni','No pizza','Cupcakes','Email','Phone','Notes']]
+      .concat(hostData.rows.map(r => [r.name, r.attending ? 'Yes' : 'No', r.count, r.who,
+                                      r.cheese, r.pepperoni, r.noPizza, r.cupcakes,
+                                      r.email, r.phone, r.notes]))
       .map(row => row.map(cell).join(',')).join('\r\n');
     const url = URL.createObjectURL(new Blob(['﻿' + csv], { type:'text/csv;charset=utf-8' }));
     const a = document.createElement('a');

@@ -89,6 +89,33 @@ should get an email as soon as the RSVP lands.
 
 ---
 
+## What guests fill in
+
+Each family answers once, and the form collects a line per person:
+
+| Step | |
+|---|---|
+| 1 | Can you make it? |
+| 2 | Your player's name |
+| 3 | How many are coming — then **name, pizza and cupcake for each person** |
+| 4 | Email for reminders (optional) |
+
+Pizza is **Cheese / Pepperoni / None** per person, so someone who isn't eating
+doesn't inflate the order. Cupcake is **Yes / No** and defaults to Yes. Names for
+extra guests are optional — anyone left blank shows up as "Guest 2".
+
+The sheet stores a `Who` column reading
+`Jordan Smith — pepperoni + cupcake | Sam Smith — cheese + cupcake`, plus
+separate `Cheese`, `Pepperoni`, `No pizza` and `Cupcakes` counts so the totals
+add up on their own. The guest list shows the same breakdown, which is what you
+order from.
+
+Re-replying replaces that family's whole roster, so people can change their
+answer freely. Their email and phone are kept even if they resubmit without
+them — otherwise an edit would quietly drop them from the reminders.
+
+---
+
 ## The party password
 
 The site asks for **GoBengals** before it shows the RSVP form or the game plan.
