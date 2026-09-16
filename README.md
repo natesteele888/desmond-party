@@ -10,11 +10,20 @@ your Google Sheet so RSVPs get saved and reminder emails go out.
 
 ## Why it wasn't working
 
-The web app URL in `index.html` returns a Google sign-in page instead of data.
-That means the Apps Script deployment's **Who has access** is set to something
-other than **Anyone**. Guests hit Send and nothing was ever saved.
+Ask the deployed web app for data and it answers:
 
-Step 4 below is the fix.
+> `Script function not found: doGet`
+
+So the deployment is alive and already public — an anonymous request reaches it
+fine. What's missing is the *code*. The version that's deployed doesn't contain
+`doGet`, which means the script was either never saved into the project, or it
+was saved but never re-deployed as a new version.
+
+That second one catches everybody: **editing the code does nothing to the live
+URL until you deploy a new version.** The web app keeps serving whatever was
+there when you last deployed.
+
+Steps 2 and 4 below are the fix, and your existing URL keeps working.
 
 ---
 
@@ -44,18 +53,23 @@ hasn't reviewed something you wrote yourself.
 `setup` builds the sheet columns, turns on the daily reminder check, and prints
 your guest-list link in the log at the bottom.
 
-### 4. Deploy it — this is the step that was wrong
-**Deploy → Manage deployments** (use *New deployment* only if there isn't one yet)
+### 4. Re-deploy — this is the step that was missed
+**Deploy → Manage deployments.** Edit the deployment that's already there — do
+*not* create a new one, or you'll get a new URL and have to update the site.
 
 - Click the ✏️ pencil
+- **Version:** **New version** ← this is the part that was never done
 - **Execute as:** Me
-- **Who has access:** **Anyone** ← this is the part that has to change
-- **Version:** New version
+- **Who has access:** Anyone *(should already say this — confirm it)*
 - **Deploy**
 
-Copy the **Web app URL** (it ends in `/exec`).
+The **Web app URL** stays exactly the same, which means step 5 is usually a
+no-op.
 
-### 5. Paste the URL into the site
+### 5. Only if the URL changed
+If you edited the existing deployment, the URL is unchanged and **you can skip
+this entirely**. Only if you had to create a brand new deployment:
+
 In `index.html`, line 332:
 
 ```js
@@ -182,9 +196,14 @@ party needs.
 
 ## If something breaks
 
-**RSVPs aren't saving** — almost always step 4. In Manage deployments, confirm
-**Who has access** is **Anyone**, and that `SCRIPT_URL` in `index.html` matches
-the current `/exec` URL.
+**RSVPs aren't saving** — almost always step 4. Open your web app URL straight
+in a browser. You should see a line of JSON like `{"ok":true,"coming":0,...}`.
+
+- `Script function not found: doGet` → the code isn't in the deployed version.
+  Paste it, save, then **Manage deployments → ✏️ → Version: New version**.
+- A Google sign-in page → **Who has access** isn't **Anyone**.
+- JSON, but the site still fails → `SCRIPT_URL` in `index.html` doesn't match
+  the current `/exec` URL.
 
 **No reminder emails** — run `healthCheck`. "Reminder triggers" should say 1. If
 it says 0, run `setup` again.
