@@ -56,7 +56,7 @@ your guest-list link in the log at the bottom.
 Copy the **Web app URL** (it ends in `/exec`).
 
 ### 5. Paste the URL into the site
-In `index.html`, line 301:
+In `index.html`, line 332:
 
 ```js
 const SCRIPT_URL = 'https://script.google.com/macros/s/..../exec';
