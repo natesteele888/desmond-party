@@ -432,9 +432,13 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
       showDone(payload);
       loadHeadcount();
     }catch(err){
-      showError(/password/i.test(String(err && err.message))
-        ? 'The party password has changed. Reload the page and enter the new one.'
-        : "Your RSVP didn't send. Check your connection and tap Send RSVP again.");
+      const msg = String(err && err.message);
+      showError(
+        /password/i.test(msg)
+          ? 'The party password has changed. Reload the page and enter the new one.'
+        : /offline/i.test(msg)
+          ? "We couldn't reach the RSVP list. Nothing was saved \u2014 please text Nate so you don't get missed."
+          : "Your RSVP didn't send. Check your connection and tap Send RSVP again.");
     }finally{
       btn.disabled = false; btn.textContent = yes ? 'Send RSVP' : 'Send my reply';
     }
@@ -452,13 +456,28 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
       const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(p) });
       const data = await res.json();
       if(!data.ok) throw new Error(data.error || 'Save failed');
+      return;
     }catch(err){
-      if(err instanceof TypeError){
-        // Some browsers block reading the reply; send blind as a fallback.
-        await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(p) });
-        return;
-      }
-      throw err;
+      // A straight answer from the script (wrong password, bad data) is final.
+      if(!(err instanceof TypeError)) throw err;
+    }
+
+    // We couldn't read the reply. Send it blind — but never claim success
+    // without proof, or a broken backend looks exactly like a saved RSVP.
+    try{
+      await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(p) });
+    }catch(e){ /* fall through to the check below */ }
+    if(!(await backendAlive())) throw new Error('The RSVP list is offline');
+  }
+
+  /** Is the Apps Script actually answering with data? */
+  async function backendAlive(){
+    try{
+      const res = await fetch(SCRIPT_URL + '?t=' + Date.now());
+      const data = await res.json();
+      return data && data.ok === true;
+    }catch(e){
+      return false;
     }
   }
 
