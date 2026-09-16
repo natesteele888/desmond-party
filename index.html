@@ -236,13 +236,7 @@
 
     <div id="form">
       <div class="step">
-        <div class="step-head"><span class="num">1</span><h2><label for="name">Who's coming?</label></h2></div>
-        <p class="hint">Your player's name (first and last)</p>
-        <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Jordan Smith" maxlength="60">
-      </div>
-
-      <div class="step">
-        <div class="step-head"><span class="num">2</span><h2 id="attend-label">Can you make it?</h2></div>
+        <div class="step-head"><span class="num">1</span><h2 id="attend-label">Can you make it?</h2></div>
         <div class="choices" role="group" aria-labelledby="attend-label">
           <button type="button" class="choice" data-group="attending" data-value="yes" aria-pressed="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Yes
@@ -251,6 +245,12 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>No
           </button>
         </div>
+      </div>
+
+      <div class="step" id="name-step" hidden>
+        <div class="step-head"><span class="num">2</span><h2><label for="name" id="name-label">Who's coming?</label></h2></div>
+        <p class="hint">Your player's name (first and last)</p>
+        <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Jordan Smith" maxlength="60">
       </div>
 
       <div class="step" id="pizza-step" hidden>
@@ -278,8 +278,8 @@
                placeholder="(978) 555-0123" maxlength="25">
       </div>
 
-      <div class="step" id="send-step">
-        <label class="small" for="notes" style="margin-top:0">Anything we should know? (optional)</label>
+      <div class="step" id="send-step" hidden>
+        <label class="small" for="notes" id="notes-label" style="margin-top:0">Anything we should know? (optional)</label>
         <textarea class="field" id="notes" maxlength="200" placeholder="Allergies, arriving late, a parent is staying…"></textarea>
         <div style="height:18px"></div>
         <p class="error" id="error" role="alert" hidden></p>
@@ -357,14 +357,27 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
       state[group] = value;
       document.querySelectorAll('[data-group="'+group+'"]').forEach(b =>
         b.setAttribute('aria-pressed', String(b === btn)));
-      if(group === 'attending'){
-        const coming = value === 'yes';
-        $('#pizza-step').hidden = !coming;
-        $('#contact-step').hidden = !coming;
-      }
+      if(group === 'attending') revealRest(value === 'yes');
       hideError();
     });
   });
+
+  /* ---------- The form opens up once they've answered yes or no ---------- */
+  function revealRest(coming){
+    $('#name-step').hidden = false;
+    $('#send-step').hidden = false;
+    $('#pizza-step').hidden = !coming;
+    $('#contact-step').hidden = !coming;
+
+    $('#name-label').textContent = coming ? "Who's coming?" : 'Who should we mark down?';
+    $('#notes-label').textContent = coming
+      ? 'Anything we should know? (optional)'
+      : 'Want to leave Desmond a birthday message? (optional)';
+    $('#notes').placeholder = coming
+      ? 'Allergies, arriving late, a parent is staying\u2026'
+      : "Happy birthday, Desmond! Sorry we'll miss it \u2014 we're away that weekend\u2026";
+    $('#send').textContent = coming ? 'Send RSVP' : 'Send my reply';
+  }
 
   /* ---------- Group size ---------- */
   function renderCount(){
@@ -388,10 +401,13 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
 
   /* ---------- Submit ---------- */
   $('#send').addEventListener('click', async () => {
-    const name = $('#name').value.trim().replace(/\s+/g,' ');
-    if(!name) return showError("Add your player's name so Desmond knows who's coming.", $('#name'));
     if(!state.attending) return showError('Tap Yes or No to let us know if you can make it.');
     const yes = state.attending === 'yes';
+
+    const name = $('#name').value.trim().replace(/\s+/g,' ');
+    if(!name) return showError(yes
+      ? "Add your player's name so Desmond knows who's coming."
+      : "Add your player's name so we know who to mark down.", $('#name'));
     if(yes && !state.pizza) return showError('Pick cheese or pepperoni.');
 
     const email = $('#email').value.trim();
@@ -420,7 +436,7 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
         ? 'The party password has changed. Reload the page and enter the new one.'
         : "Your RSVP didn't send. Check your connection and tap Send RSVP again.");
     }finally{
-      btn.disabled = false; btn.textContent = 'Send RSVP';
+      btn.disabled = false; btn.textContent = yes ? 'Send RSVP' : 'Send my reply';
     }
   });
 
@@ -467,6 +483,9 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
       done.innerHTML =
         '<h2 class="pop">Thanks for letting us know</h2>' +
         '<p>Sorry you can\'t make it, ' + first + '. If plans change, you can update your answer anytime.</p>' +
+        (p.notes
+          ? '<p class="reminder-note">We\'ll pass your message along to Desmond.</p>'
+          : '') +
         '<div class="actions"><button type="button" class="link-btn" id="change">Change my answer</button></div>';
     }
     $('#form').hidden = true;
