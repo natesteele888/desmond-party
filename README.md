@@ -217,9 +217,38 @@ party needs.
 |---|---|
 | `index.html` | The whole site — invite, RSVP form, host guest list |
 | `apps-script.gs` | Goes in the Google Sheet: saves RSVPs, sends reminders |
-| `hero.png` | Invite graphic |
+| `hero.png` | Invite graphic shown on the page |
+| `share.jpg` | The same art at 1200x630 for link previews |
 | `rsvp-qr.png` | QR code pointing at the live site |
 | `desmonds-birthday.ics` | Spare calendar file (the site generates its own) |
+
+## Link previews
+
+Sharing the link anywhere — iMessage, Facebook, WhatsApp — shows `share.jpg`,
+the hero art padded to the 1200x630 the platforms expect so none of the text
+gets cropped.
+
+Two things matter if you ever change it:
+
+- **The URL must be absolute.** `hero.png` on its own doesn't work; scrapers
+  don't resolve relative paths, which is why previews came up blank before.
+- **Keep it small.** The full `hero.png` is 2.6 MB and some scrapers give up
+  on large files. `share.jpg` is 281 KB.
+
+To regenerate it after changing the art:
+
+```bash
+cp hero.png /tmp/_h.png
+sips -s format jpeg -s formatOptions 82 -Z 1200 /tmp/_h.png --out share.jpg
+sips --padToHeightWidth 630 1200 --padColor 0B1D5E share.jpg
+```
+
+Previews are cached hard. If you've already shared the link somewhere, that
+service may keep showing the old one for days. Facebook's is refreshable at
+[developers.facebook.com/tools/debug](https://developers.facebook.com/tools/debug/);
+for iMessage, deleting the thread's link bubble and re-sending usually does it.
+
+---
 
 ## If something breaks
 
