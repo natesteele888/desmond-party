@@ -9,5 +9,15 @@ DTEND:20261003T013000Z
 SUMMARY:Desmond's 12th Birthday Tailgate & Football
 LOCATION:Lunenburg High School\, upper parking lot\, Lunenburg MA
 DESCRIPTION:Meet at 5:00 PM for pizza\, drinks & cupcakes and a flag football game. Then the LHS game at 6:30 PM. Go Blue Knights!
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P3D
+DESCRIPTION:Desmond's birthday tailgate is in 3 days - Friday at 5:00 PM
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-PT8H
+DESCRIPTION:Desmond's birthday tailgate is today at 5:00 PM
+END:VALARM
 END:VEVENT
 END:VCALENDAR
