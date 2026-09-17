@@ -11,7 +11,9 @@
 
 const PARTY_PASSWORD = 'GoBengals';                // front-door password on the invitation
 const HOST_KEY   = 'bluenights12';                 // your secret word for the guest list
-const HOST_EMAIL = '';                             // blank = the Google account running this script
+const HOST_EMAIL = 'natesteele888@gmail.com';      // must be set explicitly: on an anonymous web
+                                                   // request Session.getEffectiveUser() comes back
+                                                   // empty, so the fallback below never worked
 const PARTY_ISO  = '2026-10-02T17:00:00-04:00';    // Fri Oct 2, 2026, 5:00 PM Eastern
 const SITE_URL   = 'https://natesteele888.github.io/desmond-party/';
 const NOTIFY_HOST_ON_RSVP = true;                  // email you every time someone RSVPs
