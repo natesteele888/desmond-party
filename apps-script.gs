@@ -33,7 +33,7 @@ const PARTIES = {
     sheet: 'RSVPs',
     headers: ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Cheese', 'Pepperoni',
               'No pizza', 'Cupcakes', 'Email', 'Phone', 'Notes'],
-    food: true, notify: true, reminders: true,
+    food: true, notify: true, reminders: true, password: true,
     startsAt: '2026-10-02T17:00:00-04:00',
     site: 'https://natesteele888.github.io/desmond-party/'
   },
@@ -41,7 +41,7 @@ const PARTIES = {
     key: 'family',
     sheet: 'Family RSVPs',
     headers: ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Notes'],
-    food: false, notify: false, reminders: false,
+    food: false, notify: false, reminders: false, password: false,
     startsAt: '2026-09-26T17:00:00-04:00',
     site: 'https://natesteele888.github.io/desmond-party/family/'
   }
@@ -178,16 +178,17 @@ function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) return json_({ ok: false, error: 'No data' });
     const d = JSON.parse(e.postData.contents);
+    const cfg = party_(d.party);
 
-    // Front door. Blank out PARTY_PASSWORD above to let anyone RSVP.
-    if (PARTY_PASSWORD && tidyPass_(d.pass) !== tidyPass_(PARTY_PASSWORD)) {
+    // Front door - only for parties that ask for one. The family invite has no
+    // password screen, so requiring one here would reject every reply.
+    if (cfg.password && PARTY_PASSWORD && tidyPass_(d.pass) !== tidyPass_(PARTY_PASSWORD)) {
       return json_({ ok: false, error: 'Wrong party password' });
     }
 
     const name = tidyName_(d.name);
     if (!name) return json_({ ok: false, error: 'Missing name' });
 
-    const cfg = party_(d.party);
     const attending = d.attending === true || d.attending === 'true';
     const party = attending ? readParty_(d, name, cfg) : blankParty_();
     const count = party.count;

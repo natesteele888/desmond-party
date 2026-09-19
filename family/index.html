@@ -33,6 +33,7 @@
     --royal:#1D3FD1;
     --royal-bright:#3A63FF;
     --sky:#E9F0FF;
+    --page:#E7E8EB;      /* neutral gray the photo fades into */
     --ink:#14224F;
     --muted:#55638F;
     --line:#C9D6F5;
@@ -42,7 +43,7 @@
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0;background:var(--sky);color:var(--ink);
+    margin:0;background:var(--page);color:var(--ink);
     font-family:'Barlow',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.45;
     -webkit-font-smoothing:antialiased;
   }
@@ -51,38 +52,32 @@
   [hidden]{display:none !important}
 
   /* ---------- Hero ---------- */
-  .hero{position:relative;background:var(--navy)}
-  .hero img{display:block;width:100%;max-width:1200px;height:auto;margin:0 auto}
-  .hero::after{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(to bottom, rgba(6,14,40,.45) 0%, rgba(6,14,40,0) 32%, rgba(6,14,40,.15) 55%, rgba(6,14,40,.88) 100%);
+  /* Full-bleed photo, no frame, dissolving into the page. The mask does the
+     fade so the gray underneath shows through - no coloured band anywhere. */
+  .hero{position:relative;background:var(--page)}
+  .hero img{
+    display:block;width:100%;height:auto;
+    -webkit-mask-image:linear-gradient(to bottom, #000 72%, rgba(0,0,0,.55) 88%, transparent 100%);
+            mask-image:linear-gradient(to bottom, #000 72%, rgba(0,0,0,.55) 88%, transparent 100%);
   }
   .hero-text{
-    position:absolute;left:0;right:0;bottom:0;z-index:1;
-    padding:0 18px 18px;text-align:center;color:#fff;
-    max-width:1200px;margin:0 auto;
+    text-align:center;padding:2px 18px 0;margin:-6px auto 0;max-width:560px;position:relative;
   }
   .hero-text .kicker{
-    margin:0 0 2px;font-family:'Permanent Marker',cursive;font-size:clamp(20px,5.4vw,30px);
-    transform:rotate(-2deg);text-shadow:0 2px 12px rgba(0,0,0,.5);
+    margin:0 0 1px;font-family:'Permanent Marker',cursive;color:var(--royal);
+    font-size:clamp(20px,5.4vw,30px);transform:rotate(-2deg);
   }
   .hero-text h1{
-    margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;
-    font-size:clamp(30px,8.4vw,54px);line-height:1;letter-spacing:.01em;
-    text-shadow:0 2px 16px rgba(0,0,0,.55);
+    margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--navy);
+    font-size:clamp(30px,8.4vw,52px);line-height:1;letter-spacing:.01em;
   }
   .hero-text .when{
     margin:4px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:600;
-    font-size:clamp(17px,4.4vw,24px);opacity:.95;text-shadow:0 2px 12px rgba(0,0,0,.55);
+    font-size:clamp(17px,4.4vw,23px);color:var(--muted);
   }
-  .where{
-    margin:0;padding:11px 16px;background:var(--navy);color:#fff;text-align:center;
-    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;line-height:1.25;
-  }
-  .where span{display:block;font-family:'Barlow',sans-serif;font-weight:500;font-size:15px;opacity:.85}
 
   /* ---------- Layout ---------- */
-  main{max-width:540px;margin:14px auto 0;padding:0 14px 40px}
+  main{max-width:540px;margin:18px auto 0;padding:0 14px 40px}
   .panel{
     background:var(--white);border-radius:20px;padding:26px 20px 24px;
     box-shadow:0 14px 40px rgba(11,29,94,.14);
@@ -188,6 +183,7 @@
   /* ---------- Host view ---------- */
   .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 20px}
   .total{background:var(--sky);border-radius:14px;padding:12px 14px}
+  .p-num{background:var(--sky)}
   .total b{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;line-height:1;color:var(--navy)}
   .total span{font-size:15px;color:var(--muted)}
   .list-head{
@@ -224,13 +220,12 @@
 <header class="hero">
   <img src="hero.jpg" width="1440" height="959"
        alt="Sunset over the back lawn at Linda and Andy Griffin's house.">
-  <div class="hero-text">
-    <p class="kicker">Desmond's Birthday</p>
-    <h1>Saturday, September 26</h1>
-    <p class="when">5:00 PM &middot; Grammy&rsquo;s</p>
-  </div>
 </header>
-<p class="where">Linda &amp; Andy Griffin&rsquo;s house<span>68 Holden Road, Shirley MA</span></p>
+<div class="hero-text">
+  <p class="kicker">Desmond's Birthday</p>
+  <h1>Saturday, September 26</h1>
+  <p class="when">5:00 PM at Grammy&rsquo;s</p>
+</div>
 
 <main>
   <!-- The invitation -->
