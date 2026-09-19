@@ -1,4 +1,30 @@
-# Desmond's 12th Birthday — RSVP site
+# Desmond's Birthday — RSVP sites
+
+Two parties, one repo, one Apps Script, two separate guest lists.
+
+| | Tailgate | Family |
+|---|---|---|
+| When | Fri Oct 2, 5:00 PM | Sat Sep 26, 5:00 PM |
+| Where | Lunenburg HS upper lot | 68 Holden Road, Shirley |
+| Page | `index.html` | `family/index.html` |
+| Live | [/desmond-party/](https://natesteele888.github.io/desmond-party/) | [/desmond-party/family/](https://natesteele888.github.io/desmond-party/family/) |
+| Sheet tab | `RSVPs` | `Family RSVPs` |
+| Password | GoBengals | none |
+| Asks for | pizza + cupcake per person | names per person only |
+| Emails | RSVP alerts + reminders | none |
+
+Requests carry `party=family`; anything else falls through to the tailgate, so
+the original invite behaves exactly as it always has. Both guest lists open with
+the same `HOST_KEY`:
+
+- tailgate: `…/desmond-party/?host=<HOST_KEY>`
+- family: `…/desmond-party/family/?host=<HOST_KEY>`
+
+Share that link with Desmond's mother and you both see the family list.
+
+---
+
+# The tailgate — RSVP site
 
 **Live:** https://natesteele888.github.io/desmond-party/
 **Party:** Friday, Oct 2, 2026 · 5:00 PM · Lunenburg High School upper lot
@@ -219,6 +245,9 @@ party needs.
 | `apps-script.gs` | Goes in the Google Sheet: saves RSVPs, sends reminders |
 | `hero.png` | Invite graphic shown on the page |
 | `share.jpg` | The same art at 1200x630 for link previews |
+| `family/index.html` | The family invite (Sep 26) |
+| `family/hero.jpg` | Sunset photo behind the family banner |
+| `family/share.jpg` | That photo at 1200x630 for link previews |
 | `rsvp-qr.png` | QR code pointing at the live site |
 | `desmonds-birthday.ics` | Spare calendar file (the site generates its own) |
 

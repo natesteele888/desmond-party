@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desmond's Family Birthday – RSVP</title>
+<meta name="description" content="Saturday, September 26 at 5:00 PM at Linda & Andy Griffin's house in Shirley. Tap to RSVP.">
+<meta name="theme-color" content="#0B1D5E">
+
+<!-- Link previews. Absolute URLs only - scrapers don't resolve relative paths. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://natesteele888.github.io/desmond-party/family/">
+<meta property="og:site_name" content="Desmond's Family Birthday">
+<meta property="og:title" content="Desmond's Family Birthday">
+<meta property="og:description" content="Saturday, September 26 at 5:00 PM. Grammy is hosting at Linda & Andy Griffin's house in Shirley. Tap to RSVP.">
+<meta property="og:image" content="https://natesteele888.github.io/desmond-party/family/share.jpg">
+<meta property="og:image:secure_url" content="https://natesteele888.github.io/desmond-party/family/share.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sunset over the back lawn at Linda and Andy Griffin's house.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Desmond's Family Birthday">
+<meta name="twitter:description" content="Saturday, September 26 at 5:00 PM. Tap to RSVP.">
+<meta name="twitter:image" content="https://natesteele888.github.io/desmond-party/family/share.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1D5E;
+    --royal:#1D3FD1;
+    --royal-bright:#3A63FF;
+    --sky:#E9F0FF;
+    --ink:#14224F;
+    --muted:#55638F;
+    --line:#C9D6F5;
+    --white:#FFFFFF;
+    --error:#B3261E;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--sky);color:var(--ink);
+    font-family:'Barlow',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,input,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:3px solid var(--royal-bright);outline-offset:3px}
+  [hidden]{display:none !important}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;background:var(--navy)}
+  .hero img{display:block;width:100%;max-width:1200px;height:auto;margin:0 auto}
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom, rgba(6,14,40,.45) 0%, rgba(6,14,40,0) 32%, rgba(6,14,40,.15) 55%, rgba(6,14,40,.88) 100%);
+  }
+  .hero-text{
+    position:absolute;left:0;right:0;bottom:0;z-index:1;
+    padding:0 18px 18px;text-align:center;color:#fff;
+    max-width:1200px;margin:0 auto;
+  }
+  .hero-text .kicker{
+    margin:0 0 2px;font-family:'Permanent Marker',cursive;font-size:clamp(20px,5.4vw,30px);
+    transform:rotate(-2deg);text-shadow:0 2px 12px rgba(0,0,0,.5);
+  }
+  .hero-text h1{
+    margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:clamp(30px,8.4vw,54px);line-height:1;letter-spacing:.01em;
+    text-shadow:0 2px 16px rgba(0,0,0,.55);
+  }
+  .hero-text .when{
+    margin:4px 0 0;font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    font-size:clamp(17px,4.4vw,24px);opacity:.95;text-shadow:0 2px 12px rgba(0,0,0,.55);
+  }
+  .where{
+    margin:0;padding:11px 16px;background:var(--navy);color:#fff;text-align:center;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;line-height:1.25;
+  }
+  .where span{display:block;font-family:'Barlow',sans-serif;font-weight:500;font-size:15px;opacity:.85}
+
+  /* ---------- Layout ---------- */
+  main{max-width:540px;margin:14px auto 0;padding:0 14px 40px}
+  .panel{
+    background:var(--white);border-radius:20px;padding:26px 20px 24px;
+    box-shadow:0 14px 40px rgba(11,29,94,.14);
+  }
+  .panel + .panel{margin-top:18px}
+  .headcount{
+    margin:0 0 18px;text-align:center;font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:19px;color:var(--royal);
+  }
+
+  /* ---------- The note ---------- */
+  .note p{margin:0 0 14px;font-size:18px}
+  .note p:last-child{margin-bottom:0}
+  .note .host{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:25px;
+    color:var(--navy);line-height:1.15;
+  }
+  .note .addr{color:var(--muted);font-size:16px}
+  .map-link{display:inline-block;margin-top:2px;color:var(--royal);font-weight:600;font-size:16px}
+
+  /* ---------- Steps ---------- */
+  .step{padding:4px 0 22px}
+  .step + .step{border-top:2px dashed var(--line);padding-top:22px}
+  .step-head{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+  .num{
+    flex:none;width:38px;height:38px;border-radius:50%;background:var(--royal);color:var(--white);
+    display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;
+  }
+  .step h2{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;line-height:1.1;color:var(--navy)}
+  .hint{margin:-8px 0 12px 50px;color:var(--muted);font-size:15px}
+
+  .field{
+    width:100%;min-height:54px;padding:12px 16px;border:2.5px solid var(--line);border-radius:14px;
+    background:var(--white);font-size:19px;
+  }
+  .field:focus{border-color:var(--royal);outline:none;box-shadow:0 0 0 3px rgba(58,99,255,.25)}
+  textarea.field{min-height:80px;resize:vertical;font-size:17px}
+  label.small{display:block;margin:16px 0 6px;font-weight:600;font-size:15px;color:var(--muted)}
+
+  .choices{display:flex;gap:10px}
+  .choice{
+    flex:1;min-height:58px;border:2.5px solid var(--royal);border-radius:999px;background:var(--white);color:var(--royal);
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;
+    display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+    transition:background-color .15s,color .15s;-webkit-tap-highlight-color:transparent;
+  }
+  .choice svg{width:20px;height:20px;flex:none}
+  .choice[aria-pressed="true"]{background:var(--royal);color:var(--white)}
+  .choice[data-value="no"][aria-pressed="true"]{background:var(--navy);border-color:var(--navy)}
+
+  .stepper{display:flex;align-items:center;gap:14px;margin-top:4px}
+  .stepper button{
+    width:52px;height:52px;border-radius:50%;border:2.5px solid var(--royal);background:var(--white);color:var(--royal);
+    font-size:28px;font-weight:600;line-height:1;cursor:pointer;
+  }
+  .stepper button:disabled{opacity:.35;cursor:default}
+  .stepper output{min-width:44px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;color:var(--navy)}
+  .stepper .unit{color:var(--muted);font-size:16px}
+
+  /* ---------- Who's in the group ---------- */
+  #roster{margin-top:18px}
+  .person{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:2px dashed var(--line)}
+  .p-num{
+    flex:none;width:26px;height:26px;border-radius:50%;background:var(--sky);color:var(--royal);
+    display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;
+  }
+  .p-name{font-weight:600;font-size:18px;color:var(--navy);overflow-wrap:anywhere}
+  .p-name.empty{color:var(--muted);font-weight:500}
+  .p-input{
+    flex:1;min-width:0;min-height:46px;padding:9px 13px;border:2px solid var(--line);
+    border-radius:12px;background:var(--white);font-size:17px;
+  }
+  .p-input:focus{border-color:var(--royal);outline:none;box-shadow:0 0 0 3px rgba(58,99,255,.2)}
+
+  .error{margin:0 0 14px;color:var(--error);font-weight:600;font-size:16px}
+  .send{
+    width:100%;min-height:62px;border:0;border-radius:16px;background:var(--royal);color:var(--white);cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;letter-spacing:.02em;
+    box-shadow:0 5px 0 var(--navy);
+  }
+  .send:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
+  .send:disabled{opacity:.7;cursor:progress}
+
+  /* ---------- Confirmation ---------- */
+  .done{text-align:center;padding:10px 4px 6px}
+  .done h2{
+    font-family:'Permanent Marker',cursive;font-weight:400;color:var(--royal);
+    font-size:clamp(32px,9vw,44px);line-height:1.05;margin:6px 0 12px;transform:rotate(-3deg);
+  }
+  .done p{margin:0 auto 18px;max-width:34ch}
+  .done .summary{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:var(--navy)}
+  .done .soft{font-size:15px;color:var(--muted)}
+  .actions{display:flex;flex-direction:column;gap:10px}
+  .btn-outline{
+    display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:14px;
+    border:2.5px solid var(--royal);color:var(--royal);background:var(--white);text-decoration:none;cursor:pointer;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;
+  }
+  .link-btn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:10px;font-size:16px}
+  .pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* ---------- Host view ---------- */
+  .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 20px}
+  .total{background:var(--sky);border-radius:14px;padding:12px 14px}
+  .total b{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;line-height:1;color:var(--navy)}
+  .total span{font-size:15px;color:var(--muted)}
+  .list-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    margin:22px 0 2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;
+    font-size:22px;color:var(--navy);
+  }
+  .list-head span{font-family:'Barlow',sans-serif;font-weight:600;font-size:15px;color:var(--muted)}
+  .guest{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .guest .g-name{font-weight:600}
+  .guest .g-who{display:block;font-size:14px;color:var(--ink);margin:2px 0 3px}
+  .guest .g-notes{display:block;font-size:14px;color:var(--muted)}
+  .guest .g-meta{text-align:right;font-size:15px;white-space:nowrap}
+  .guest.no .g-name{color:var(--muted)}
+  .host-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .host-actions .btn-outline{min-height:46px;font-size:18px}
+  .host-actions .wide{grid-column:1 / -1}
+  .peek{display:block;margin:0 auto;padding:10px;background:none;border:0;color:var(--muted);
+        font-size:14px;text-decoration:underline;cursor:pointer;font-family:inherit}
+
+  footer{text-align:center;padding:18px 20px 44px}
+  footer p{
+    margin:0;font-family:'Permanent Marker',cursive;font-size:26px;color:var(--royal);transform:rotate(-3deg);
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .pop{animation:none}
+    .choice{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img src="hero.jpg" width="1440" height="959"
+       alt="Sunset over the back lawn at Linda and Andy Griffin's house.">
+  <div class="hero-text">
+    <p class="kicker">Desmond's Birthday</p>
+    <h1>Saturday, September 26</h1>
+    <p class="when">5:00 PM &middot; Grammy&rsquo;s</p>
+  </div>
+</header>
+<p class="where">Linda &amp; Andy Griffin&rsquo;s house<span>68 Holden Road, Shirley MA</span></p>
+
+<main>
+  <!-- The invitation -->
+  <section class="panel note" id="note-panel" aria-labelledby="note-title">
+    <h2 id="note-title" hidden>You're invited</h2>
+    <p class="host">Grammy is hosting a family birthday for Desmond.</p>
+    <p>Saturday, <b>September 26th at 5:00&nbsp;PM</b>. I hope you can make it.</p>
+    <p class="addr">Linda &amp; Andy Griffin&rsquo;s house<br>68 Holden Road, Shirley MA<br>
+      <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=68+Holden+Road+Shirley+MA" target="_blank" rel="noopener">Get directions</a>
+    </p>
+  </section>
+
+  <!-- RSVP -->
+  <section class="panel" id="rsvp-panel" aria-labelledby="rsvp-title">
+    <h2 id="rsvp-title" hidden>RSVP</h2>
+    <p class="headcount" id="headcount" hidden></p>
+
+    <div id="form">
+      <div class="step">
+        <div class="step-head"><span class="num">1</span><h2 id="attend-label">Can you make it?</h2></div>
+        <div class="choices" role="group" aria-labelledby="attend-label">
+          <button type="button" class="choice" data-group="attending" data-value="yes" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Yes
+          </button>
+          <button type="button" class="choice" data-group="attending" data-value="no" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>No
+          </button>
+        </div>
+      </div>
+
+      <div class="step" id="name-step" hidden>
+        <div class="step-head"><span class="num">2</span><h2><label for="name" id="name-label">Who's coming?</label></h2></div>
+        <p class="hint">Your name</p>
+        <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Linda Griffin" maxlength="60">
+      </div>
+
+      <div class="step" id="group-step" hidden>
+        <div class="step-head"><span class="num">3</span><h2 id="count-label">How many are coming?</h2></div>
+        <p class="hint">Counting yourself</p>
+        <div class="stepper" role="group" aria-labelledby="count-label">
+          <button type="button" id="minus" aria-label="One fewer">&minus;</button>
+          <output id="count" aria-live="polite">1</output>
+          <button type="button" id="plus" aria-label="One more">+</button>
+          <span class="unit" id="count-unit">person</span>
+        </div>
+        <div id="roster"></div>
+      </div>
+
+      <div class="step" id="send-step" hidden>
+        <label class="small" for="notes" id="notes-label" style="margin-top:0">Anything we should know? (optional)</label>
+        <textarea class="field" id="notes" maxlength="200" placeholder="Allergies, arriving late, bringing something&hellip;"></textarea>
+        <div style="height:18px"></div>
+        <p class="error" id="error" role="alert" hidden></p>
+        <button type="button" class="send" id="send">Send RSVP</button>
+      </div>
+    </div>
+
+    <div class="done" id="done" hidden aria-live="polite"></div>
+  </section>
+
+  <!-- Host view (only with ?host=KEY) -->
+  <section class="panel" id="host-panel" hidden aria-labelledby="host-title">
+    <h2 id="host-title" style="margin:0 0 16px;font-family:'Barlow Condensed',sans-serif;font-size:28px;color:var(--navy)">Family guest list</h2>
+    <div id="host-body"><p>Loading RSVPs&hellip;</p></div>
+  </section>
+</main>
+
+<footer><p>See you at Grammy's!</p></footer>
+
+<script>
+/* =========================================================
+   Same Apps Script as the tailgate invite. The party key
+   below is what keeps the two guest lists apart.
+   ========================================================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwVfqsKa8qJ5288KzdRgLxxs0Het2sE4wryBTdMucDLeALBQ_Qhp4NZfcq2aL5rdUpvpg/exec';
+const PARTY = 'family';
+
+(function(){
+  const $ = s => document.querySelector(s);
+  const state = { attending:null, count:1, guests:[{ name:'' }] };
+  const params = new URLSearchParams(location.search);
+  const hostKey = params.get('host');
+  let demoRows = []; // used only when SCRIPT_URL is blank
+
+  const api = extra => SCRIPT_URL + '?party=' + encodeURIComponent(PARTY) + (extra || '') + '&t=' + Date.now();
+
+  /* ---------- Yes / No ---------- */
+  document.querySelectorAll('.choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.dataset.group, value = btn.dataset.value;
+      state[group] = value;
+      document.querySelectorAll('[data-group="'+group+'"]').forEach(b =>
+        b.setAttribute('aria-pressed', String(b === btn)));
+      if(group === 'attending') revealRest(value === 'yes');
+      hideError();
+    });
+  });
+
+  /* ---------- The form opens up once they've answered ---------- */
+  function revealRest(coming){
+    $('#name-step').hidden = false;
+    $('#send-step').hidden = false;
+    $('#group-step').hidden = !coming;
+
+    $('#name-label').textContent = coming ? "Who's coming?" : 'Who should we mark down?';
+    $('#notes-label').textContent = coming
+      ? 'Anything we should know? (optional)'
+      : 'Want to leave Desmond a birthday message? (optional)';
+    $('#notes').placeholder = coming
+      ? 'Allergies, arriving late, bringing something…'
+      : "Happy birthday, Desmond! Sorry we'll miss it…";
+    $('#send').textContent = coming ? 'Send RSVP' : 'Send my reply';
+  }
+
+  /* ---------- Group size and who's in it ---------- */
+  function renderCount(){
+    $('#count').textContent = state.count;
+    $('#count-unit').textContent = state.count === 1 ? 'person' : 'people';
+    $('#minus').disabled = state.count <= 1;
+    $('#plus').disabled = state.count >= 12;
+    renderRoster();
+  }
+  $('#minus').addEventListener('click', () => { state.count = Math.max(1, state.count-1); renderCount(); });
+  $('#plus').addEventListener('click', () => { state.count = Math.min(12, state.count+1); renderCount(); });
+
+  const guestName = () => $('#name').value.trim().replace(/\s+/g,' ');
+
+  function personCard(g, i){
+    const who = i === 0
+      ? '<span class="p-name' + (guestName() ? '' : ' empty') + '" id="p-name-0">' +
+        escapeHTML(guestName() || 'You') + '</span>'
+      : '<input class="p-input" type="text" data-i="' + i + '" autocomplete="off" ' +
+        'autocapitalize="words" placeholder="Name (optional)" maxlength="60" value="' +
+        escapeHTML(g.name) + '">';
+    return '<div class="person"><span class="p-num">' + (i+1) + '</span>' + who + '</div>';
+  }
+
+  function renderRoster(){
+    while(state.guests.length < state.count) state.guests.push({ name:'' });
+    state.guests.length = state.count;
+    $('#roster').innerHTML = state.guests.map(personCard).join('');
+  }
+
+  $('#roster').addEventListener('input', e => {
+    const inp = e.target.closest('.p-input');
+    if(inp) state.guests[Number(inp.dataset.i)].name = inp.value;
+  });
+
+  renderCount();
+
+  /* ---------- Errors ---------- */
+  function showError(msg, focusEl){
+    const e = $('#error'); e.textContent = msg; e.hidden = false;
+    if(focusEl) focusEl.focus();
+  }
+  function hideError(){ $('#error').hidden = true; }
+  $('#name').addEventListener('input', () => {
+    hideError();
+    const el = document.getElementById('p-name-0');
+    if(el){
+      el.textContent = guestName() || 'You';
+      el.classList.toggle('empty', !guestName());
+    }
+  });
+
+  /* ---------- Submit ---------- */
+  $('#send').addEventListener('click', async () => {
+    if(!state.attending) return showError('Tap Yes or No to let us know if you can make it.');
+    const yes = state.attending === 'yes';
+
+    const name = guestName();
+    if(!name) return showError(yes
+      ? 'Add your name so Grammy knows who to expect.'
+      : 'Add your name so we know who to mark down.', $('#name'));
+
+    const payload = {
+      party: PARTY,
+      name,
+      attending: yes,
+      count: yes ? state.count : 0,
+      guests: yes ? state.guests.map((g, i) => ({ name: i === 0 ? name : g.name.trim() })) : [],
+      notes: $('#notes').value.trim()
+    };
+
+    const btn = $('#send');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try{
+      await sendRSVP(payload);
+      showDone(payload);
+      loadHeadcount();
+    }catch(err){
+      showError(/offline/i.test(String(err && err.message))
+        ? "We couldn't reach the guest list. Nothing was saved — please text Nate so you don't get missed."
+        : "Your RSVP didn't send. Check your connection and tap the button again.");
+    }finally{
+      btn.disabled = false; btn.textContent = yes ? 'Send RSVP' : 'Send my reply';
+    }
+  });
+
+  async function sendRSVP(p){
+    if(!SCRIPT_URL){
+      demoRows = demoRows.filter(r => r.name.toLowerCase() !== p.name.toLowerCase());
+      demoRows.push(Object.assign({ who: p.guests.map(g => g.name || 'Guest').join(' | ') }, p));
+      await new Promise(r => setTimeout(r, 400));
+      return;
+    }
+    try{
+      // text/plain body keeps this a "simple" request so Apps Script accepts it
+      const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(p) });
+      const data = await res.json();
+      if(!data.ok) throw new Error(data.error || 'Save failed');
+      return;
+    }catch(err){
+      if(!(err instanceof TypeError)) throw err;
+    }
+    // Couldn't read the reply. Send blind, then prove it landed before confirming.
+    try{
+      await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(p) });
+    }catch(e){ /* fall through to the check below */ }
+    if(!(await backendAlive())) throw new Error('The guest list is offline');
+  }
+
+  async function backendAlive(){
+    try{
+      const data = await (await fetch(api())).json();
+      return data && data.ok === true;
+    }catch(e){ return false; }
+  }
+
+  /* ---------- Confirmation ---------- */
+  function showDone(p){
+    const first = escapeHTML(p.name.split(' ')[0]);
+    const done = $('#done');
+    if(p.attending){
+      const who = p.count === 1 ? 'Just you' : p.count + ' people';
+      done.innerHTML =
+        '<h2 class="pop">See you there, ' + first + '!</h2>' +
+        '<p class="summary">' + who + '</p>' +
+        '<p>Saturday, September 26 at 5:00&nbsp;PM at Linda &amp; Andy Griffin&rsquo;s, 68 Holden Road, Shirley.</p>' +
+        '<div class="actions">' +
+          '<a class="btn-outline" href="' + icsHref() + '" download="desmonds-family-birthday.ics">Add to calendar</a>' +
+          '<button type="button" class="link-btn" id="change">Change my answer</button>' +
+        '</div>';
+    }else{
+      done.innerHTML =
+        '<h2 class="pop">Thanks for letting us know</h2>' +
+        '<p>Sorry you can\'t make it, ' + first + '. If plans change, you can update your answer anytime.</p>' +
+        (p.notes ? '<p class="soft">We\'ll pass your message along to Desmond.</p>' : '') +
+        '<div class="actions"><button type="button" class="link-btn" id="change">Change my answer</button></div>';
+    }
+    $('#form').hidden = true;
+    done.hidden = false;
+    $('#change').addEventListener('click', () => {
+      done.hidden = true; $('#form').hidden = false; $('#name').focus();
+    });
+    document.getElementById('rsvp-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function icsHref(){
+    const ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Steele//Desmond Family Birthday//EN','BEGIN:VEVENT',
+      'UID:desmond-family-birthday-2026@natesteele888.github.io',
+      'DTSTAMP:20260919T120000Z',
+      'DTSTART:20260926T210000Z',   // 5:00 PM EDT
+      'DTEND:20260927T000000Z',     // ~8:00 PM EDT
+      "SUMMARY:Desmond's Family Birthday",
+      'LOCATION:68 Holden Road\\, Shirley MA',
+      'DESCRIPTION:Grammy is hosting a family birthday for Desmond at Linda & Andy Griffin\'s house.',
+      'BEGIN:VALARM','ACTION:DISPLAY','TRIGGER:-P1D',
+      "DESCRIPTION:Desmond's family birthday is tomorrow at 5:00 PM",'END:VALARM',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+  }
+
+  /* ---------- Headcount (no names) ---------- */
+  async function loadHeadcount(){
+    try{
+      const t = SCRIPT_URL ? await (await fetch(api())).json() : summarize(demoRows);
+      if(t && t.coming > 0){
+        const el = $('#headcount');
+        el.textContent = t.coming + (t.coming === 1 ? ' person is' : ' people are') + ' coming so far';
+        el.hidden = false;
+      }
+    }catch(e){ /* nice-to-have */ }
+  }
+
+  function summarize(rows){
+    const t = { coming:0, notComing:0, families:0 };
+    rows.forEach(r => {
+      if(r.attending){ t.coming += r.count; t.families++; } else t.notComing++;
+    });
+    return t;
+  }
+
+  /* ---------- Host view ---------- */
+  let hostData = null;
+
+  async function loadHost(){
+    $('#host-panel').hidden = false;
+    $('#rsvp-panel').hidden = true;
+    const body = $('#host-body');
+    try{
+      const data = SCRIPT_URL
+        ? await (await fetch(api('&host=' + encodeURIComponent(hostKey)))).json()
+        : Object.assign(summarize(demoRows), { rows: demoRows });
+      if(!data.rows){
+        try{ localStorage.removeItem('desmond-host-key'); }catch(e){}
+        body.innerHTML = '<p>That host key doesn\'t match. It has to be exactly the <b>HOST_KEY</b> from the Apps Script.</p>';
+        return;
+      }
+      hostData = data;
+      try{ localStorage.setItem('desmond-host-key', hostKey); }catch(e){}
+
+      const rows = data.rows.slice().sort((x,y) => (y.attending - x.attending) || x.name.localeCompare(y.name));
+      body.innerHTML =
+        '<div class="totals">' +
+          total(data.coming, data.coming === 1 ? 'person coming' : 'people coming') +
+          total(data.notComing, "can't make it") +
+        '</div>' +
+        (typeof data.daysUntil === 'number'
+          ? '<p class="headcount" style="margin:-8px 0 14px">' +
+            (data.daysUntil > 0 ? 'Party is in ' + data.daysUntil + (data.daysUntil === 1 ? ' day' : ' days') + '.'
+             : data.daysUntil === 0 ? 'Party is today!' : 'Party has passed.') + '</p>'
+          : '') +
+        (rows.length
+          ? '<h3 class="list-head">Who&rsquo;s replied <span>' + rows.length +
+            (rows.length === 1 ? ' reply' : ' replies') + '</span></h3>' + rows.map(guestRow).join('')
+          : '<p>No RSVPs yet. Share the link to get them rolling.</p>') +
+        '<div class="host-actions">' +
+          '<button type="button" class="btn-outline" id="csv">Download CSV</button>' +
+          '<button type="button" class="btn-outline" id="refresh">Refresh list</button>' +
+        '</div>';
+
+      $('#refresh').addEventListener('click', loadHost);
+      $('#csv').addEventListener('click', downloadCSV);
+    }catch(e){
+      body.innerHTML = '<p>Couldn\'t load the RSVPs. Check that the Apps Script is deployed with access set to <b>Anyone</b>, then reload.</p>';
+    }
+  }
+
+  function total(n, label){ return '<div class="total"><b>' + (n||0) + '</b><span>' + label + '</span></div>'; }
+
+  function guestRow(r){
+    const who = (r.who || '').split(' | ').filter(Boolean);
+    return '<div class="guest' + (r.attending ? '' : ' no') + '">' +
+      '<div><span class="g-name">' + escapeHTML(r.name) + '</span>' +
+        (who.length > 1 ? '<span class="g-who">' + who.map(escapeHTML).join('<br>') + '</span>' : '') +
+        (r.notes ? '<span class="g-notes">' + escapeHTML(r.notes) + '</span>' : '') + '</div>' +
+      '<div class="g-meta">' + (r.attending ? r.count + (r.count === 1 ? ' person' : ' people') : 'Not coming') + '</div>' +
+    '</div>';
+  }
+
+  function downloadCSV(){
+    if(!hostData) return;
+    const cell = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const csv = [['Name','Attending','Group size','Who','Notes']]
+      .concat(hostData.rows.map(r => [r.name, r.attending ? 'Yes' : 'No', r.count, r.who, r.notes]))
+      .map(row => row.map(cell).join(',')).join('\r\n');
+    const url = URL.createObjectURL(new Blob(['﻿' + csv], { type:'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = 'desmond-family-rsvps.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  /* ---------- Secret way in: tap the footer three times ---------- */
+  function wireSecretEntry(){
+    const footer = document.querySelector('footer');
+    let saved = null;
+    try{ saved = localStorage.getItem('desmond-host-key'); }catch(e){}
+    const go = key => { location.search = '?host=' + encodeURIComponent(key); };
+
+    if(saved){
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'peek'; b.textContent = 'Guest list';
+      b.addEventListener('click', () => go(saved));
+      footer.appendChild(b);
+    }
+
+    let taps = 0, timer = null;
+    footer.querySelector('p').addEventListener('click', () => {
+      taps++;
+      clearTimeout(timer);
+      timer = setTimeout(() => { taps = 0; }, 1200);
+      if(taps >= 3){
+        taps = 0;
+        const key = window.prompt('Host key:', saved || '');
+        if(key && key.trim()) go(key.trim());
+      }
+    });
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  if(hostKey){ loadHost(); } else { loadHeadcount(); wireSecretEntry(); }
+})();
+</script>
+</body>
+</html>

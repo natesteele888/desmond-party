@@ -21,6 +21,36 @@ const NOTIFY_HOST_ON_RSVP = true;                  // email you every time someo
 // ==================================================================
 
 const SHEET_NAME = 'RSVPs';
+
+/**
+ * Two parties share this one script. Requests pick a party with ?party=<key>
+ * (or "party" in the POST body); anything unrecognised falls through to the
+ * tailgate, so the original invite behaves exactly as it always has.
+ */
+const PARTIES = {
+  tailgate: {
+    key: 'tailgate',
+    sheet: 'RSVPs',
+    headers: ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Cheese', 'Pepperoni',
+              'No pizza', 'Cupcakes', 'Email', 'Phone', 'Notes'],
+    food: true, notify: true, reminders: true,
+    startsAt: '2026-10-02T17:00:00-04:00',
+    site: 'https://natesteele888.github.io/desmond-party/'
+  },
+  family: {
+    key: 'family',
+    sheet: 'Family RSVPs',
+    headers: ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Notes'],
+    food: false, notify: false, reminders: false,
+    startsAt: '2026-09-26T17:00:00-04:00',
+    site: 'https://natesteele888.github.io/desmond-party/family/'
+  }
+};
+
+function party_(name) {
+  const k = String(name || '').trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(PARTIES, k) ? PARTIES[k] : PARTIES.tailgate;
+}
 const TZ = 'America/New_York';
 const HEADERS = ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Cheese', 'Pepperoni',
                  'No pizza', 'Cupcakes', 'Email', 'Phone', 'Notes'];
@@ -30,7 +60,8 @@ const HEADERS = ['Updated', 'Name', 'Attending', 'Group size', 'Who', 'Cheese', 
  * and logs your host link. Safe to run again any time.
  */
 function setup() {
-  const sh = getSheet_();
+  const sh = getSheet_(PARTIES.tailgate);
+  const fam = getSheet_(PARTIES.family);
   SpreadsheetApp.getActiveSpreadsheet().setSpreadsheetTimeZone(TZ);
 
   // Remove any old copies of the trigger, then install exactly one.
@@ -42,15 +73,17 @@ function setup() {
   const msg = [
     'Setup complete.',
     '',
-    'Sheet tab:      ' + sh.getName(),
-    'Reminders:      daily check at ~9am ' + TZ,
-    '                -> 3 days before (' + fmt_(addDays_(partyDate_(), -3)) + ')',
-    '                -> morning of    (' + fmt_(partyDate_()) + ')',
+    'Tailgate tab:   ' + sh.getName(),
+    'Family tab:     ' + fam.getName() + '  (no emails, no reminders)',
+    'Reminders:      daily check at ~9am ' + TZ + ', tailgate only',
+    '                -> 3 days before (' + fmt_(addDays_(partyDate_(PARTIES.tailgate), -3)) + ')',
+    '                -> morning of    (' + fmt_(partyDate_(PARTIES.tailgate)) + ')',
     'Alerts go to:   ' + hostEmail_(),
     'Party password: ' + (PARTY_PASSWORD || '(none - anyone can RSVP)'),
     '',
-    'YOUR GUEST LIST LINK (bookmark this, do not share it):',
-    SITE_URL + '?host=' + encodeURIComponent(HOST_KEY),
+    'YOUR GUEST LIST LINKS (bookmark these, do not share them):',
+    '  tailgate: ' + PARTIES.tailgate.site + '?host=' + encodeURIComponent(HOST_KEY),
+    '  family:   ' + PARTIES.family.site + '?host=' + encodeURIComponent(HOST_KEY),
     '',
     'Next: Deploy > New deployment > Web app > Execute as Me,',
     'Who has access ANYONE. Copy the /exec URL into index.html.'
@@ -61,11 +94,12 @@ function setup() {
 
 // ---------------------------------------------------------------- sheet
 
-function getSheet_() {
+function getSheet_(p) {
+  p = p || PARTIES.tailgate;
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sh = ss.getSheetByName(SHEET_NAME);
-  if (!sh) sh = ss.insertSheet(SHEET_NAME);
-  ensureHeaders_(sh);
+  let sh = ss.getSheetByName(p.sheet);
+  if (!sh) sh = ss.insertSheet(p.sheet);
+  ensureHeaders_(sh, p.headers);
   return sh;
 }
 
@@ -77,7 +111,8 @@ function getSheet_() {
  * so the sheet still reports the old width and the new header lands on top
  * of an existing one.
  */
-function ensureHeaders_(sh) {
+function ensureHeaders_(sh, headers) {
+  headers = headers || HEADERS;
   const width = Math.max(sh.getLastColumn(), 1);
   const have = sh.getLastRow() === 0
     ? []
@@ -85,7 +120,7 @@ function ensureHeaders_(sh) {
 
   const row = have.slice();
   while (row.length && !row[row.length - 1]) row.pop();   // drop trailing blanks
-  HEADERS.forEach(function (h) {
+  headers.forEach(function (h) {
     if (row.indexOf(h) === -1) row.push(h);
   });
 
@@ -152,14 +187,15 @@ function doPost(e) {
     const name = tidyName_(d.name);
     if (!name) return json_({ ok: false, error: 'Missing name' });
 
+    const cfg = party_(d.party);
     const attending = d.attending === true || d.attending === 'true';
-    const party = attending ? readParty_(d, name) : blankParty_();
+    const party = attending ? readParty_(d, name, cfg) : blankParty_();
     const count = party.count;
     const email = validEmail_(d.email) ? String(d.email).trim() : '';
     const phone = String(d.phone || '').trim().slice(0, 25);
     const notes = String(d.notes || '').trim().slice(0, 200);
 
-    const sh = getSheet_();
+    const sh = getSheet_(cfg);
     const c = cols_(sh);
     const rows = readRows_(sh);
     let target = 0;
@@ -191,7 +227,9 @@ function doPost(e) {
     put('Phone', keepPhone);
     put('Notes', notes);
 
-    if (NOTIFY_HOST_ON_RSVP) notifyHost_(name, attending, party, notes, keepEmail, keepPhone, isNew);
+    if (NOTIFY_HOST_ON_RSVP && cfg.notify) {
+      notifyHost_(name, attending, party, notes, keepEmail, keepPhone, isNew);
+    }
 
     return json_({ ok: true });
   } catch (err) {
@@ -234,10 +272,12 @@ function notifyHost_(name, attending, party, notes, email, phone, isNew) {
 
 /** Public: totals only. With ?host=HOST_KEY: the full guest list. */
 function doGet(e) {
-  const rows = readRows_(getSheet_());
+  const cfg = party_(e && e.parameter ? e.parameter.party : '');
+  const rows = readRows_(getSheet_(cfg));
   const t = totals_(rows);
   t.ok = true;
-  t.daysUntil = daysUntilParty_();
+  t.party = cfg.key;
+  t.daysUntil = daysUntilParty_(cfg);
 
   if (e && e.parameter && e.parameter.host === HOST_KEY) {
     t.rows = rows.map(function (r) {
@@ -281,7 +321,8 @@ function blankParty_() {
  * Turns the per-person list from the form into counts plus one readable line.
  * Falls back to a single guest if an older page posts without a list.
  */
-function readParty_(d, leadName) {
+function readParty_(d, leadName, cfg) {
+  cfg = cfg || PARTIES.tailgate;
   const out = blankParty_();
   let list = Array.isArray(d.guests) ? d.guests.slice(0, 10) : [];
   if (!list.length) list = [{ name: leadName, pizza: d.pizza, cupcake: true }];
@@ -299,7 +340,9 @@ function readParty_(d, leadName) {
     else out.noPizza++;
     if (cupcake) out.cupcakes++;
 
-    parts.push(who + ' \u2014 ' + pizza.toLowerCase() + (cupcake ? ' + cupcake' : ', no cupcake'));
+    parts.push(cfg.food
+      ? who + ' \u2014 ' + pizza.toLowerCase() + (cupcake ? ' + cupcake' : ', no cupcake')
+      : who);
   });
 
   out.count = list.length;
@@ -320,15 +363,15 @@ function orderLine_(p) {
 // ---------------------------------------------------------------- reminders
 
 function props_() { return PropertiesService.getScriptProperties(); }
-function partyDate_() { return new Date(PARTY_ISO); }
+function partyDate_(cfg) { return new Date((cfg || PARTIES.tailgate).startsAt || PARTY_ISO); }
 function addDays_(d, n) { return new Date(d.getTime() + n * 86400000); }
 function fmt_(d) { return Utilities.formatDate(d, TZ, 'EEE MMM d'); }
 
-function daysUntilParty_() {
+function daysUntilParty_(cfg) {
   const dayStart = function (d) {
     return new Date(Utilities.formatDate(d, TZ, 'yyyy/MM/dd') + ' 00:00:00');
   };
-  return Math.round((dayStart(partyDate_()) - dayStart(new Date())) / 86400000);
+  return Math.round((dayStart(partyDate_(cfg)) - dayStart(new Date())) / 86400000);
 }
 
 /** Runs daily from the trigger installed by setup(). */
@@ -449,14 +492,16 @@ function esc_(s) {
 
 /** Quick self-check. Run this if something seems off. */
 function healthCheck() {
-  const sh = getSheet_();
+  const sh = getSheet_(PARTIES.tailgate);
   const rows = readRows_(sh);
+  const famRows = readRows_(getSheet_(PARTIES.family));
   const out = [
+    '--- TAILGATE (Oct 2) ---',
     'Sheet rows:        ' + rows.length,
     'Coming (people):   ' + totals_(rows).coming,
     'Food order:        ' + (orderLine_(totals_(rows)) || 'nothing yet'),
     'With email:        ' + rows.filter(function (r) { return r.attending && r.email; }).length,
-    'Days until party:  ' + daysUntilParty_(),
+    'Days until party:  ' + daysUntilParty_(PARTIES.tailgate),
     'Party password:    ' + (PARTY_PASSWORD || '(none)'),
     'Alerts go to:      ' + hostEmail_(),
     'Emails left today: ' + MailApp.getRemainingDailyQuota(),
@@ -465,7 +510,14 @@ function healthCheck() {
     }).length + ' (should be 1)',
     '3-day sent:        ' + (props_().getProperty('sent_3day') || 'not yet'),
     'Day-of sent:       ' + (props_().getProperty('sent_dayof') || 'not yet'),
-    'Host link:         ' + SITE_URL + '?host=' + encodeURIComponent(HOST_KEY)
+    'Host link:         ' + PARTIES.tailgate.site + '?host=' + encodeURIComponent(HOST_KEY),
+    '',
+    '--- FAMILY (Sep 26) ---',
+    'Sheet rows:        ' + famRows.length,
+    'Coming (people):   ' + totals_(famRows).coming,
+    'Days until party:  ' + daysUntilParty_(PARTIES.family),
+    'Emails/reminders:  off for this one',
+    'Host link:         ' + PARTIES.family.site + '?host=' + encodeURIComponent(HOST_KEY)
   ].join('\n');
   Logger.log(out);
   return out;
