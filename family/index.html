@@ -60,6 +60,17 @@
     -webkit-mask-image:linear-gradient(to bottom, #000 72%, rgba(0,0,0,.55) 88%, transparent 100%);
             mask-image:linear-gradient(to bottom, #000 72%, rgba(0,0,0,.55) 88%, transparent 100%);
   }
+  /* Still edge to edge on a wide screen, but capped in height and cropped to a
+     band - at full height a 3:2 photo swallows the whole desktop viewport. */
+  @media (min-width:700px){
+    .hero img{
+      height:clamp(240px, 36vh, 400px);
+      object-fit:cover;object-position:center 45%;
+      /* the crop already trims the frame, so fade later and keep more lawn */
+      -webkit-mask-image:linear-gradient(to bottom, #000 84%, transparent 100%);
+              mask-image:linear-gradient(to bottom, #000 84%, transparent 100%);
+    }
+  }
   .hero-text{
     text-align:center;padding:2px 18px 0;margin:-6px auto 0;max-width:560px;position:relative;
   }
@@ -152,6 +163,12 @@
   }
   .p-input:focus{border-color:var(--royal);outline:none;box-shadow:0 0 0 3px rgba(58,99,255,.2)}
 
+  .slow-note{
+    margin:12px 0 0;text-align:center;font-size:15px;line-height:1.35;color:var(--muted);
+    animation:fadein .35s ease both;
+  }
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){ .slow-note{animation:none} }
   .error{margin:0 0 14px;color:var(--error);font-weight:600;font-size:16px}
   .send{
     width:100%;min-height:62px;border:0;border-radius:16px;background:var(--royal);color:var(--white);cursor:pointer;
@@ -280,6 +297,8 @@
         <div style="height:18px"></div>
         <p class="error" id="error" role="alert" hidden></p>
         <button type="button" class="send" id="send">Send RSVP</button>
+        <p class="slow-note" id="slow-note" hidden>Still sending &mdash; this can take up to 20 seconds.
+          Please don&rsquo;t close the page.</p>
       </div>
     </div>
 
@@ -412,6 +431,8 @@ const PARTY = 'family';
 
     const btn = $('#send');
     btn.disabled = true; btn.textContent = 'Sending…';
+    // Apps Script cold-starts after an idle spell; reassure rather than look stuck.
+    const slowNote = setTimeout(() => { $('#slow-note').hidden = false; }, 5000);
     try{
       await sendRSVP(payload);
       showDone(payload);
@@ -421,6 +442,8 @@ const PARTY = 'family';
         ? "We couldn't reach the guest list. Nothing was saved — please text Nate so you don't get missed."
         : "Your RSVP didn't send. Check your connection and tap the button again.");
     }finally{
+      clearTimeout(slowNote);
+      $('#slow-note').hidden = true;
       btn.disabled = false; btn.textContent = yes ? 'Send RSVP' : 'Send my reply';
     }
   });

@@ -157,6 +157,12 @@
   .pill[aria-pressed="true"]{background:var(--royal);border-color:var(--royal);color:var(--white)}
   @media (prefers-reduced-motion:reduce){ .pill{transition:none} }
 
+  .slow-note{
+    margin:12px 0 0;text-align:center;font-size:15px;line-height:1.35;color:var(--muted);
+    animation:fadein .35s ease both;
+  }
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){ .slow-note{animation:none} }
   .error{margin:0 0 14px;color:var(--error);font-weight:600;font-size:16px}
   .send{
     width:100%;min-height:62px;border:0;border-radius:16px;background:var(--royal);color:var(--white);cursor:pointer;
@@ -333,6 +339,8 @@
         <div style="height:18px"></div>
         <p class="error" id="error" role="alert" hidden></p>
         <button type="button" class="send" id="send">Send RSVP</button>
+        <p class="slow-note" id="slow-note" hidden>Still sending &mdash; this can take up to 20 seconds.
+          Please don&rsquo;t close the page.</p>
       </div>
     </div>
 
@@ -547,6 +555,8 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
 
     const btn = $('#send');
     btn.disabled = true; btn.textContent = 'Sending…';
+    // Apps Script cold-starts after an idle spell; reassure rather than look stuck.
+    const slowNote = setTimeout(() => { $('#slow-note').hidden = false; }, 5000);
     try{
       await sendRSVP(payload);
       showDone(payload);
@@ -560,6 +570,8 @@ const PASS_HASH = '5c1b9da713538f0f3a40a5615fa5dc4f0ba9fc73a971d7eb331a297dd7367
           ? "We couldn't reach the RSVP list. Nothing was saved \u2014 please text Nate so you don't get missed."
           : "Your RSVP didn't send. Check your connection and tap Send RSVP again.");
     }finally{
+      clearTimeout(slowNote);
+      $('#slow-note').hidden = true;
       btn.disabled = false; btn.textContent = yes ? 'Send RSVP' : 'Send my reply';
     }
   });
