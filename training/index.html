@@ -5,147 +5,181 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Desmond's Power Program</title>
 <meta name="description" content="A 9-week offseason plyometrics, core &amp; dumbbell program — built for mornings.">
-<meta name="theme-color" content="#1D3FD1">
+<meta name="theme-color" content="#0A0D12">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#0B1D5E;
-    --royal:#1D3FD1;
-    --royal-bright:#3A63FF;
-    --sky:#E9F0FF;
-    --ink:#14224F;
-    --muted:#55638F;
-    --line:#C9D6F5;
-    --white:#FFFFFF;
-    --gold:#F5A623;
-    --green:#1F8A4C;
+    --bg:#0A0D12;
+    --surface:#151A22;
+    --surface2:#1C2430;
+    --line:#2A3340;
+    --text:#EEF2F8;
+    --muted:#8C98AC;
+    --volt:#C6FF3D;
+    --volt-ink:#0A0D12;
+    --ember:#FF6B3D;
   }
   *{box-sizing:border-box}
   body{
-    margin:0;background:var(--sky);color:var(--ink);
-    font-family:'Barlow',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.45;
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.45;
     padding-bottom:env(safe-area-inset-bottom);
   }
-  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;margin:0}
+  h1,h2,h3{font-family:'Oswald',sans-serif;margin:0}
   main{max-width:520px;margin:0 auto;padding:0 14px 48px}
-  header.top{padding:22px 4px 10px;text-align:center}
-  header.top h1{font-weight:800;font-size:28px;color:var(--navy);line-height:1.1}
+  header.top{padding:26px 4px 10px;text-align:center}
+  header.top h1{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-weight:700;font-size:27px;color:var(--text);line-height:1.1;text-transform:uppercase;letter-spacing:.01em;
+  }
+  header.top h1 .bolt{color:var(--volt);flex:none}
+  header.top h1 .accent{color:var(--volt)}
   header.top .sub{margin:8px 0 0;color:var(--muted);font-size:15px}
   .info-strip{
-    background:var(--white);border:1px solid var(--line);border-radius:12px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;
     padding:10px 14px;margin:14px 0;font-size:13.5px;color:var(--muted);line-height:1.5;
   }
-  .info-strip b{color:var(--navy)}
-  .progressbar{height:10px;border-radius:999px;background:var(--white);border:1px solid var(--line);overflow:hidden;margin:4px 0 10px}
-  .progressbar .fill{height:100%;background:linear-gradient(90deg,var(--royal),var(--royal-bright));border-radius:999px;transition:width .3s}
+  .info-strip b{color:var(--volt)}
+  .progressbar{height:10px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;margin:4px 0 10px}
+  .progressbar .fill{height:100%;background:var(--volt);border-radius:999px;transition:width .3s}
   .statline{font-size:14px;color:var(--muted);text-align:center;margin-bottom:14px;font-weight:600}
-  .statline b{color:var(--navy)}
+  .statline b{color:var(--text)}
   nav.tabs{display:flex;gap:8px;margin-bottom:16px}
   .tab{
-    flex:1;border:2px solid var(--royal);background:var(--white);color:var(--royal);
-    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;
+    flex:1;border:2px solid var(--volt);background:var(--surface);color:var(--volt);
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;text-transform:uppercase;letter-spacing:.02em;
     border-radius:999px;padding:10px 0;cursor:pointer;
   }
-  .tab[aria-pressed="true"]{background:var(--royal);color:var(--white)}
+  .tab[aria-pressed="true"]{background:var(--volt);color:var(--volt-ink)}
 
-  .card{background:var(--white);border-radius:20px;padding:22px 18px;box-shadow:0 2px 10px rgba(11,29,94,.06)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px 18px}
   .phase-pill{
-    display:inline-block;background:var(--sky);color:var(--royal);font-family:'Barlow Condensed',sans-serif;
-    font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;
+    display:inline-block;background:var(--surface2);color:var(--volt);font-family:'Oswald',sans-serif;
+    font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;
     border-radius:999px;padding:5px 12px;margin-bottom:10px;
   }
   .daynum{color:var(--muted);font-size:14px;font-weight:600;margin-bottom:2px}
-  .daytitle{font-size:27px;font-weight:800;color:var(--navy);line-height:1.1;margin-bottom:4px}
+  .daytitle{font-size:26px;font-weight:700;color:var(--text);line-height:1.1;margin-bottom:4px;text-transform:uppercase}
   .daytime{color:var(--muted);font-size:14.5px;margin-bottom:16px}
   .daynav{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
   .daynav button{
-    border:0;background:none;color:var(--royal);font-family:'Barlow Condensed',sans-serif;
-    font-weight:700;font-size:15px;cursor:pointer;padding:6px 8px;
+    border:0;background:none;color:var(--volt);font-family:'Oswald',sans-serif;
+    font-weight:600;font-size:15px;cursor:pointer;padding:6px 8px;text-transform:uppercase;
   }
   .daynav button:disabled{color:var(--line);cursor:default}
 
   .section-head{
-    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--navy);
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;color:var(--text);
     text-transform:uppercase;letter-spacing:.03em;margin:18px 0 8px;display:flex;align-items:center;gap:8px;
   }
   .section-head .chip{
-    background:var(--sky);color:var(--royal);border-radius:999px;padding:2px 10px;font-size:12.5px;
-    text-transform:none;letter-spacing:0;font-weight:700;
+    background:var(--surface2);color:var(--volt);border-radius:999px;padding:2px 10px;font-size:12.5px;
+    text-transform:none;letter-spacing:0;font-weight:700;font-family:'Inter',sans-serif;
   }
   ul.exlist{list-style:none;margin:0;padding:0}
   ul.exlist li{
-    display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--sky);
+    display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);
   }
   ul.exlist li:last-child{border-bottom:0}
   .exbox{
-    flex:none;width:26px;height:26px;border-radius:8px;border:2.5px solid var(--royal);
-    background:var(--white);margin-top:1px;cursor:pointer;display:grid;place-items:center;
+    flex:none;width:26px;height:26px;border-radius:8px;border:2.5px solid var(--volt);
+    background:transparent;margin-top:1px;cursor:pointer;display:grid;place-items:center;
   }
-  .exbox.checked{background:var(--royal)}
-  .exbox.checked::after{content:"✓";color:var(--white);font-weight:800;font-size:16px}
+  .exbox.checked{background:var(--volt)}
+  .exbox.checked::after{content:"✓";color:var(--volt-ink);font-weight:800;font-size:16px}
   .exmeta{flex:1}
-  .exname{font-weight:700;color:var(--ink);font-size:16px}
-  .exname .tag{font-size:12px;color:var(--gold);font-weight:700;margin-left:4px}
-  .exreps{color:var(--royal);font-weight:700;font-size:14.5px;white-space:nowrap;margin-left:auto;padding-left:10px}
+  .exname{font-weight:600;color:var(--text);font-size:16px}
+  .exname .tag{font-size:11px;color:var(--ember);font-weight:700;margin-left:4px;border:1px solid var(--ember);border-radius:5px;padding:1px 4px;vertical-align:1px}
+  .exreps{color:var(--volt);font-weight:700;font-size:14.5px;white-space:nowrap;margin-left:auto;padding-left:10px}
   .excue{color:var(--muted);font-size:14px;margin-top:2px;line-height:1.35}
 
   .note{
-    margin:18px 0 0;padding:12px 14px;border-radius:14px;background:var(--sky);font-size:14.5px;line-height:1.5;color:var(--navy);
+    margin:18px 0 0;padding:12px 14px;border-radius:14px;background:var(--surface2);font-size:14.5px;line-height:1.5;color:var(--text);
   }
-  .note b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--royal);margin-bottom:3px}
+  .note b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--volt);margin-bottom:3px;font-family:'Oswald',sans-serif}
 
   .complete-btn{
     width:100%;min-height:58px;border:0;border-radius:16px;cursor:pointer;margin-top:20px;
-    font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:21px;letter-spacing:.02em;
-    background:var(--royal);color:var(--white);
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:19px;letter-spacing:.03em;text-transform:uppercase;
+    background:var(--volt);color:var(--volt-ink);
   }
-  .complete-btn.done{background:var(--green)}
+  .complete-btn.done{background:var(--surface2);color:var(--volt);border:2px solid var(--volt)}
 
-  .rest-card .daytitle{color:var(--navy)}
-  .tip{background:var(--sky);border-radius:14px;padding:12px 14px;font-size:15px;margin-top:4px}
+  .rest-card .daytitle{color:var(--text)}
+  .tip{background:var(--surface2);border-radius:14px;padding:12px 14px;font-size:15px;margin-top:4px;color:var(--text)}
 
   .celebrate{text-align:center;padding:30px 10px}
   .celebrate .big{font-size:52px;margin-bottom:6px}
-  .celebrate h2{font-size:26px;color:var(--navy);margin-bottom:8px}
+  .celebrate h2{font-size:25px;color:var(--text);margin-bottom:8px;text-transform:uppercase}
   .celebrate p{color:var(--muted);font-size:15px;max-width:34ch;margin:0 auto}
 
   .weekblock{margin-bottom:22px}
   .weekblock .wh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-  .weekblock .wh h3{font-size:19px;color:var(--navy)}
-  .weekblock .wh span{font-size:12.5px;color:var(--royal);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .weekblock .wh h3{font-size:19px;color:var(--text)}
+  .weekblock .wh span{font-size:12.5px;color:var(--volt);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-family:'Oswald',sans-serif}
   .chipgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
   .daychip{
     min-width:0;overflow:hidden;
-    aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:var(--white);
+    aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:var(--surface2);
     display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
-    font-family:'Barlow Condensed',sans-serif;
+    font-family:'Oswald',sans-serif;
   }
-  .daychip .n{font-weight:800;font-size:15px;color:var(--ink)}
+  .daychip .n{font-weight:700;font-size:15px;color:var(--text)}
   .daychip .t{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
-  .daychip.done{background:var(--royal);border-color:var(--royal)}
-  .daychip.done .n,.daychip.done .t{color:var(--white)}
-  .daychip.selected{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
-  .daychip.rest{background:var(--sky)}
+  .daychip.done{background:var(--volt);border-color:var(--volt)}
+  .daychip.done .n,.daychip.done .t{color:var(--volt-ink)}
+  .daychip.selected{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember)}
+  .daychip.rest{background:var(--surface)}
 
   .phase-divider{
     margin:26px 0 14px;padding-top:14px;border-top:2px solid var(--line);
   }
-  .phase-divider h2{font-size:21px;color:var(--navy)}
+  .phase-divider h2{font-size:20px;color:var(--text);text-transform:uppercase}
   .phase-divider p{font-size:14px;color:var(--muted);margin-top:4px}
 
   .resetwrap{text-align:center;margin-top:26px}
   .resetwrap button{
     border:0;background:none;color:var(--muted);text-decoration:underline;font-size:13.5px;cursor:pointer;font-family:inherit;
   }
+
+  .phtitle{font-family:'Oswald',sans-serif;font-weight:700;font-size:21px;text-transform:uppercase;color:var(--text);margin-bottom:4px}
+  .phsub{color:var(--muted);font-size:14px;margin-bottom:18px}
+  .mrow{margin-bottom:16px}
+  .mrow label{display:block;font-weight:600;font-size:14.5px;color:var(--text);margin-bottom:4px}
+  .mrow .inputwrap{display:flex;align-items:center;gap:8px}
+  .mrow input{
+    flex:1;min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface2);
+    color:var(--text);font-size:16px;padding:0 12px;font-family:inherit;
+  }
+  .mrow input::placeholder{color:var(--muted)}
+  .mrow input:focus{outline:none;border-color:var(--volt)}
+  .mrow .unit{color:var(--muted);font-size:13.5px;min-width:26px}
+  .mrow .hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .metric-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .metric-card .mlabel{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;font-weight:700;font-family:'Oswald',sans-serif}
+  .metric-card .mvalue{font-family:'Oswald',sans-serif;font-size:27px;font-weight:700;color:var(--text);margin:2px 0 2px}
+  .metric-card .mdelta{font-size:13px;font-weight:600}
+  .metric-card .mdelta.good{color:var(--volt)}
+  .metric-card .mdelta.bad{color:var(--ember)}
+  .metric-card .mdelta.neutral{color:var(--muted)}
+  .metric-card .empty{font-size:13.5px;color:var(--muted);margin-top:2px}
+  .metric-card .spark{display:block;margin-top:8px}
+  .history{margin-top:4px}
+  .history summary{cursor:pointer;color:var(--volt);font-weight:700;font-size:14px;padding:10px 2px;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em}
+  .hrow{display:flex;align-items:center;gap:8px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13px}
+  .hrow .hdate{color:var(--text);font-weight:700;min-width:46px;font-family:'Oswald',sans-serif}
+  .hrow .hvals{color:var(--muted);flex:1}
+  .hrow .hdel{border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px;padding:2px 6px;line-height:1}
+  .hrow .hdel:hover{color:var(--ember)}
 </style>
 </head>
 <body>
 <main id="app">
   <header class="top">
-    <h1>Desmond's Power Program</h1>
+    <h1><svg class="bolt" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13 2 3 14h7l-1 8 11-14h-7l1-6z"/></svg>Desmond's <span class="accent">Power</span> Program</h1>
     <p class="sub">9 weeks of plyometrics, core &amp; light dumbbells — built for mornings.</p>
   </header>
 
@@ -155,10 +189,12 @@
   <nav class="tabs">
     <button class="tab" data-tab="today" aria-pressed="true">Today</button>
     <button class="tab" data-tab="program" aria-pressed="false">Program</button>
+    <button class="tab" data-tab="progress" aria-pressed="false">Progress</button>
   </nav>
 
   <div id="view-today"></div>
   <div id="view-program" hidden></div>
+  <div id="view-progress" hidden></div>
 </main>
 
 <script>
@@ -437,6 +473,155 @@
     w("Easy walk or shoot around","10-15 min, just moving, nothing hard")
   ];
 
+  // ---------- Measurements ----------
+
+  function fmtFeetIn(v){
+    if(v === null || v === undefined || isNaN(v)) return "—";
+    var ft = Math.floor(v/12);
+    var inch = Math.round((v - ft*12)*10)/10;
+    return ft + "'" + inch + '"';
+  }
+  function fmtLb(v){ return (v===null||v===undefined||isNaN(v)) ? "—" : v+" lb"; }
+  function fmtSec(v){ return (v===null||v===undefined||isNaN(v)) ? "—" : v+" sec"; }
+
+  var METRICS = [
+    { key:"height", label:"Height", unit:"in", step:"0.5", ph:"e.g. 56", hint:"Barefoot against a wall, mark and measure.", fmt:fmtFeetIn, trend:null },
+    { key:"weight", label:"Weight", unit:"lb", step:"0.5", ph:"e.g. 78", hint:"Same time of day if you can.", fmt:fmtLb, trend:null },
+    { key:"broadJump", label:"Standing Broad Jump", unit:"in", step:"0.5", ph:"e.g. 54", hint:"Feet together, swing your arms, jump forward — measure heel to the start line.", fmt:fmtFeetIn, trend:"up" },
+    { key:"plank", label:"Plank Hold", unit:"sec", step:"1", ph:"e.g. 35", hint:"Max time in good plank form — stop when your hips sag.", fmt:fmtSec, trend:"up" },
+    { key:"sprint10", label:"10-Yard Sprint", unit:"sec", step:"0.1", ph:"e.g. 2.3", hint:"Have someone time you with a phone — lower is faster.", fmt:fmtSec, trend:"down" }
+  ];
+
+  function parseNum(str){
+    if(str === undefined || str === null) return null;
+    var s = String(str).trim();
+    if(s === "") return null;
+    var n = parseFloat(s);
+    return isNaN(n) ? null : n;
+  }
+
+  function currentProgramDay(){
+    var next = getNextIncompleteDay();
+    return next ? next : TOTAL_DAYS;
+  }
+
+  function getMetricSeries(key){
+    return state.measurements
+      .filter(function(m){ return m[key] !== undefined && m[key] !== null; })
+      .map(function(m){ return { date:m.date, day:m.day, value:+m[key] }; });
+  }
+
+  function fmtDate(iso){
+    var d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString(undefined, { month:"short", day:"numeric" });
+  }
+
+  function sparkline(values){
+    if(values.length < 2) return "";
+    var w = 280, h = 46, pad = 6;
+    var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+    var range = (max - min) || 1;
+    var stepX = (w - pad*2) / (values.length - 1);
+    var pts = values.map(function(v, i){
+      var x = pad + i*stepX;
+      var y = pad + (h - pad*2) - ((v - min)/range)*(h - pad*2);
+      return [x,y];
+    });
+    var path = pts.map(function(p,i){ return (i===0?"M":"L") + p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ");
+    var dots = pts.map(function(p,i){
+      var isLast = i === pts.length - 1;
+      return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + (isLast?4:2.5) + '" fill="var(--volt)"' + (isLast?' stroke="var(--surface)" stroke-width="2"':'') + '/>';
+    }).join("");
+    return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" preserveAspectRatio="none">'
+      + '<path d="' + path + '" fill="none" stroke="var(--volt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+      + dots
+      + '</svg>';
+  }
+
+  function saveMeasurement(){
+    var today = todayStr();
+    var idx = state.measurements.findIndex(function(m){ return m.date === today; });
+    var entry = idx >= 0 ? Object.assign({}, state.measurements[idx]) : { date:today };
+    METRICS.forEach(function(m){
+      var input = document.getElementById("m_" + m.key);
+      var v = parseNum(input ? input.value : null);
+      if(v !== null) entry[m.key] = v;
+    });
+    entry.day = currentProgramDay();
+    if(idx >= 0) state.measurements[idx] = entry; else state.measurements.push(entry);
+    state.measurements.sort(function(a,b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+    saveState();
+    renderProgressView();
+  }
+
+  function deleteMeasurement(date){
+    if(!window.confirm("Delete this check-in?")) return;
+    state.measurements = state.measurements.filter(function(m){ return m.date !== date; });
+    saveState();
+    renderProgressView();
+  }
+
+  function renderProgressView(){
+    var el = document.getElementById("view-progress");
+    var html = '';
+
+    html += '<div class="card">'
+      + '<div class="phtitle">Log a Check-In</div>'
+      + '<div class="phsub">Day ' + currentProgramDay() + ' &middot; ' + fmtDate(todayStr()) + '. Best times: Day 1, Day 22, Day 43, and Day 63 — or anytime. Leave any field blank to skip it.</div>';
+    METRICS.forEach(function(m){
+      html += '<div class="mrow">'
+        + '<label for="m_' + m.key + '">' + m.label + '</label>'
+        + '<div class="inputwrap"><input id="m_' + m.key + '" type="number" inputmode="decimal" step="' + m.step + '" placeholder="' + m.ph + '"><span class="unit">' + m.unit + '</span></div>'
+        + '<div class="hint">' + m.hint + '</div>'
+        + '</div>';
+    });
+    html += '<button class="complete-btn" id="saveMeasureBtn">Save Check-In</button>'
+      + '</div>';
+
+    METRICS.forEach(function(m){
+      var series = getMetricSeries(m.key);
+      html += '<div class="metric-card"><div class="mlabel">' + m.label + '</div>';
+      if(series.length === 0){
+        html += '<div class="empty">Not logged yet</div>';
+      } else {
+        var latest = series[series.length-1].value;
+        html += '<div class="mvalue">' + m.fmt(latest) + '</div>';
+        if(series.length > 1){
+          var first = series[0].value;
+          var delta = Math.round((latest-first)*10)/10;
+          var deltaClass = "neutral";
+          if(m.trend === "up") deltaClass = delta > 0 ? "good" : (delta < 0 ? "bad" : "neutral");
+          if(m.trend === "down") deltaClass = delta < 0 ? "good" : (delta > 0 ? "bad" : "neutral");
+          var sign = delta >= 0 ? "+" : "";
+          html += '<div class="mdelta ' + deltaClass + '">' + sign + delta + ' ' + m.unit + ' since Day ' + series[0].day + '</div>';
+          html += sparkline(series.map(function(s){ return s.value; }));
+        } else {
+          html += '<div class="empty">Log another check-in to see your trend</div>';
+        }
+      }
+      html += '</div>';
+    });
+
+    if(state.measurements.length > 0){
+      html += '<details class="history"><summary>All Check-Ins (' + state.measurements.length + ')</summary>';
+      state.measurements.slice().reverse().forEach(function(m){
+        var vals = METRICS.map(function(mt){
+          return (m[mt.key] !== undefined && m[mt.key] !== null) ? (mt.label + " " + mt.fmt(m[mt.key])) : null;
+        }).filter(Boolean).join(" &middot; ");
+        html += '<div class="hrow"><span class="hdate">' + fmtDate(m.date) + '</span><span class="hvals">' + (vals || "—") + '</span><button class="hdel" data-del="' + m.date + '" aria-label="Delete check-in">&times;</button></div>';
+      });
+      html += '</details>';
+    }
+
+    el.innerHTML = html;
+
+    var saveBtn = document.getElementById("saveMeasureBtn");
+    if(saveBtn) saveBtn.addEventListener("click", saveMeasurement);
+    el.querySelectorAll("[data-del]").forEach(function(btn){
+      btn.addEventListener("click", function(){ deleteMeasurement(btn.getAttribute("data-del")); });
+    });
+  }
+
   // ---------- Build the 63-day schedule ----------
 
   var SCHEDULE = [];
@@ -465,7 +650,7 @@
       var raw = localStorage.getItem(STORE_KEY);
       if(raw) return JSON.parse(raw);
     }catch(e){}
-    return { completed:{}, completionDates:[], selectedDay:1, checks:{} };
+    return { completed:{}, completionDates:[], selectedDay:1, checks:{}, measurements:[] };
   }
   function saveState(){
     try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
@@ -474,6 +659,7 @@
   if(!state.completed) state.completed = {};
   if(!state.completionDates) state.completionDates = [];
   if(!state.checks) state.checks = {};
+  if(!state.measurements) state.measurements = [];
   if(!state.selectedDay) state.selectedDay = getNextIncompleteDay() || 1;
 
   function getNextIncompleteDay(){
@@ -664,8 +850,8 @@
     var resetBtn = document.getElementById("resetBtn");
     if(resetBtn){
       resetBtn.addEventListener("click", function(){
-        if(window.confirm("Reset all progress? This clears every day you've checked off.")){
-          state = { completed:{}, completionDates:[], selectedDay:1, checks:{} };
+        if(window.confirm("Reset all progress? This clears every day you've checked off and every check-in you've logged.")){
+          state = { completed:{}, completionDates:[], selectedDay:1, checks:{}, measurements:[] };
           saveState();
           renderAll();
         }
@@ -677,6 +863,7 @@
     renderStats();
     renderToday();
     renderProgram();
+    renderProgressView();
   }
 
   function setTab(tab){
@@ -686,6 +873,7 @@
     });
     document.getElementById("view-today").hidden = tab !== "today";
     document.getElementById("view-program").hidden = tab !== "program";
+    document.getElementById("view-progress").hidden = tab !== "progress";
     window.scrollTo(0,0);
   }
 
