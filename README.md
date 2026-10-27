@@ -24,6 +24,30 @@ Share that link with Desmond's mother and you both see the family list.
 
 ---
 
+# Desmond's Power Program — 9-week training app
+
+**Live:** https://natesteele888.github.io/desmond-party/training/
+**File:** `training/index.html`
+
+A standalone offseason program for Desmond: 9 weeks of plyometrics, core work,
+and light dumbbell training (5/8/10 lb), built as a simple mobile checklist he
+can run through first thing in the morning. It's unrelated to the RSVP sites
+above — same repo and GitHub Pages hosting for convenience, nothing else is
+shared.
+
+| | |
+|---|---|
+| Structure | 9 weeks × 7 days — 6 workout days + 1 rest day each week |
+| Phases | Foundation (wks 1-3), Build (wks 4-6, 8 lb dumbbells), Power (wks 7-9, 8-10 lb) |
+| Day types | Lower-body plyo, core, dumbbell strength, speed/agility, rotational core, full-body circuit |
+| Progress | Saved with `localStorage` on whatever device/browser he opens it on — no login, no server, nothing syncs across devices |
+
+No Apps Script, no password, no sheet — it's entirely self-contained in one
+HTML file. To change exercises, reps, or add weeks, edit the `WORKOUTS` and
+`SCHEDULE` data near the top of the `<script>` block in `training/index.html`.
+
+---
+
 # The tailgate — RSVP site
 
 **Live:** https://natesteele888.github.io/desmond-party/
@@ -246,6 +270,7 @@ party needs.
 | `hero.png` | Invite graphic shown on the page |
 | `share.jpg` | The same art at 1200x630 for link previews |
 | `family/index.html` | The family invite (Sep 26) |
+| `training/index.html` | Desmond's 9-week offseason training app (self-contained) |
 | `family/hero.jpg` | Sunset photo behind the family banner |
 | `family/share.jpg` | That photo at 1200x630 for link previews |
 | `rsvp-qr.png` | QR code pointing at the live site |
