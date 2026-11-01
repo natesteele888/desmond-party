@@ -9,7 +9,7 @@ Two parties, one repo, one Apps Script, two separate guest lists.
 | Page | `index.html` | `family/index.html` |
 | Live | [/desmond-party/](https://natesteele888.github.io/desmond-party/) | [/desmond-party/family/](https://natesteele888.github.io/desmond-party/family/) |
 | Sheet tab | `RSVPs` | `Family RSVPs` |
-| Password | GoBengals | none |
+| Password | (the party password — kept out of this public repo) | none |
 | Asks for | pizza + cupcake per person | names per person only |
 | Emails | RSVP alerts + reminders | none |
 
@@ -66,7 +66,7 @@ Select everything in the editor, delete it, and paste all of `apps-script.gs`.
 Click the 💾 save icon.
 
 Optional, near the top of the file:
-- `PARTY_PASSWORD` — the front-door password. Currently `GoBengals`.
+- `PARTY_PASSWORD` — the front-door password. Currently `(the party password — kept out of this public repo)`.
 - `HOST_KEY` — your secret word for the guest list. Currently `bluenights12`.
 - `HOST_EMAIL` — leave blank and alerts go to whichever Google account you're signed in as.
 
@@ -112,7 +112,7 @@ updates in a minute or two.
 > change and you can skip this step entirely.
 
 ### 6. Check it
-Open the live site. You should get the password screen — enter **GoBengals**,
+Open the live site. You should get the password screen — enter **(the party password — kept out of this public repo)**,
 then RSVP as "Test Test" and delete that row from the Sheet afterwards. You
 should get an email as soon as the RSVP lands.
 
@@ -147,9 +147,9 @@ them — otherwise an edit would quietly drop them from the reminders.
 
 ## The party password
 
-The site asks for **GoBengals** before it shows the RSVP form or the game plan.
+The site asks for **(the party password — kept out of this public repo)** before it shows the RSVP form or the game plan.
 Capitals and stray spaces don't matter — `gobengals`, `GOBENGALS` and
-`  GoBengals ` all work.
+`  (the party password — kept out of this public repo) ` all work.
 
 It's checked twice: once on the page, and again by the Apps Script when the RSVP
 comes in, so nobody can skip the form and post straight to the web app URL.
@@ -158,7 +158,7 @@ Two ways to give it to people:
 
 - Put it on the invitation and let them type it.
 - Send a link that opens the door for them:
-  `https://natesteele888.github.io/desmond-party/?p=GoBengals`
+  `https://natesteele888.github.io/desmond-party/?p=PASSWORD`
   The page strips the password out of the address bar once it's in.
 
 Either way the browser remembers it, so guests only do this once per device.
