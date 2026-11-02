@@ -10,7 +10,7 @@
 // ============ THE ONLY THINGS YOU MIGHT WANT TO CHANGE ============
 
 const PARTY_PASSWORD = 'SET_IN_APPS_SCRIPT_ONLY';                // front-door password on the invitation
-const HOST_KEY   = 'bluenights12';                 // your secret word for the guest list
+const HOST_KEY   = 'SET_IN_APPS_SCRIPT_ONLY';                 // your secret word for the guest list
 const HOST_EMAIL = 'natesteele888@gmail.com';      // must be set explicitly: on an anonymous web
                                                    // request Session.getEffectiveUser() comes back
                                                    // empty, so the fallback below never worked

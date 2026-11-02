@@ -67,7 +67,7 @@ Click the 💾 save icon.
 
 Optional, near the top of the file:
 - `PARTY_PASSWORD` — the front-door password. Currently `(the party password — kept out of this public repo)`.
-- `HOST_KEY` — your secret word for the guest list. Currently `bluenights12`.
+- `HOST_KEY` — your secret word for the guest list. Set it in Apps Script only (kept out of this public repo).
 - `HOST_EMAIL` — leave blank and alerts go to whichever Google account you're signed in as.
 
 ### 3. Run `setup` once
@@ -198,7 +198,7 @@ Your host link skips the password screen entirely.
    host key. After the first time, that device shows a small **Guest list** link
    in the footer — no typing needed again.
 2. **Bookmark the direct link:**
-   `https://natesteele888.github.io/desmond-party/?host=bluenights12`
+   `https://natesteele888.github.io/desmond-party/?host=<your HOST_KEY>`
 3. Open the Google Sheet.
 
 The guest list shows headcount, cheese vs. pepperoni, who can't make it, notes,
