@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Desmond's Family Birthday – RSVP</title>
-<meta name="description" content="Saturday, September 26 at 5:00 PM at Linda & Andy Griffin's house in Shirley. Tap to RSVP.">
+<meta name="description" content="Saturday, September 26 at 5:00 PM. This party has ended. Thanks for coming!">
 <meta name="theme-color" content="#0B1D5E">
 
 <!-- Link previews. Absolute URLs only - scrapers don't resolve relative paths. -->
@@ -12,13 +12,13 @@
 <meta property="og:url" content="https://natesteele888.github.io/desmond-party/family/">
 <meta property="og:site_name" content="Desmond's Family Birthday">
 <meta property="og:title" content="Desmond's Family Birthday">
-<meta property="og:description" content="Saturday, September 26 at 5:00 PM. Grammy is hosting at Linda & Andy Griffin's house in Shirley. Tap to RSVP.">
+<meta property="og:description" content="This family party has ended. Thanks for coming!">
 <meta property="og:image" content="https://natesteele888.github.io/desmond-party/family/share.jpg">
 <meta property="og:image:secure_url" content="https://natesteele888.github.io/desmond-party/family/share.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Sunset over the back lawn at Linda and Andy Griffin's house.">
+<meta property="og:image:alt" content="Sunset over a back lawn.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Desmond's Family Birthday">
 <meta name="twitter:description" content="Saturday, September 26 at 5:00 PM. Tap to RSVP.">
@@ -236,7 +236,7 @@
 
 <header class="hero">
   <img src="hero.jpg" width="1440" height="959"
-       alt="Sunset over the back lawn at Linda and Andy Griffin's house.">
+       alt="Sunset over a back lawn.">
 </header>
 <div class="hero-text">
   <p class="kicker">Desmond's Birthday</p>
@@ -250,9 +250,7 @@
     <h2 id="note-title" hidden>You're invited</h2>
     <p class="host">Grammy is hosting a family birthday for Desmond.</p>
     <p>Saturday, <b>September 26th at 5:00&nbsp;PM</b>. I hope you can make it.</p>
-    <p class="addr">Linda &amp; Andy Griffin&rsquo;s house<br>68 Holden Road, Shirley MA<br>
-      <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=68+Holden+Road+Shirley+MA" target="_blank" rel="noopener">Get directions</a>
-    </p>
+    <p class="addr">This party has ended. Thanks for coming!</p>
   </section>
 
   <!-- RSVP -->
@@ -276,7 +274,7 @@
       <div class="step" id="name-step" hidden>
         <div class="step-head"><span class="num">2</span><h2><label for="name" id="name-label">Who's coming?</label></h2></div>
         <p class="hint">Your name</p>
-        <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Linda Griffin" maxlength="60">
+        <input class="field" id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="Your name" maxlength="60">
       </div>
 
       <div class="step" id="group-step" hidden>
@@ -487,7 +485,7 @@ const PARTY = 'family';
       done.innerHTML =
         '<h2 class="pop">See you there, ' + first + '!</h2>' +
         '<p class="summary">' + who + '</p>' +
-        '<p>Saturday, September 26 at 5:00&nbsp;PM at Linda &amp; Andy Griffin&rsquo;s, 68 Holden Road, Shirley.</p>' +
+        '<p>Saturday, September 26 at 5:00&nbsp;PM.</p>' +
         '<div class="actions">' +
           '<a class="btn-outline" href="' + icsHref() + '" download="desmonds-family-birthday.ics">Add to calendar</a>' +
           '<button type="button" class="link-btn" id="change">Change my answer</button>' +
@@ -515,8 +513,7 @@ const PARTY = 'family';
       'DTSTART:20260926T210000Z',   // 5:00 PM EDT
       'DTEND:20260927T000000Z',     // ~8:00 PM EDT
       "SUMMARY:Desmond's Family Birthday",
-      'LOCATION:68 Holden Road\\, Shirley MA',
-      'DESCRIPTION:Grammy is hosting a family birthday for Desmond at Linda & Andy Griffin\'s house.',
+      'DESCRIPTION:Grammy is hosting a family birthday for Desmond.',
       'BEGIN:VALARM','ACTION:DISPLAY','TRIGGER:-P1D',
       "DESCRIPTION:Desmond's family birthday is tomorrow at 5:00 PM",'END:VALARM',
       'END:VEVENT','END:VCALENDAR'
