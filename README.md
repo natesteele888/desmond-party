@@ -5,7 +5,7 @@ Two parties, one repo, one Apps Script, two separate guest lists.
 | | Tailgate | Family |
 |---|---|---|
 | When | Fri Oct 2, 5:00 PM | Sat Sep 26, 5:00 PM |
-| Where | Lunenburg HS upper lot | 68 Holden Road, Shirley |
+| Where | Lunenburg HS upper lot | Private home (event ended) |
 | Page | `index.html` | `family/index.html` |
 | Live | [/desmond-party/](https://natesteele888.github.io/desmond-party/) | [/desmond-party/family/](https://natesteele888.github.io/desmond-party/family/) |
 | Sheet tab | `RSVPs` | `Family RSVPs` |
